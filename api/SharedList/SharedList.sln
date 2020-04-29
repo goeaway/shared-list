@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedList.API.Presentation", "SharedList.API.Presentation\SharedList.API.Presentation.csproj", "{BAFC366F-15E8-42C1-BC79-36E604F44127}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedList.API.Presentation", "SharedList.API.Presentation\SharedList.API.Presentation.csproj", "{BAFC366F-15E8-42C1-BC79-36E604F44127}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{1A49E80B-A339-443C-9804-FC26B695DE48}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{A4248FC4-041C-4E73-B22E-276C4326404A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{6D3628FE-7CD9-41D1-A557-735C93AEA825}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F7D7914B-6FC5-4BE6-9C7D-1F550214EFDD}"
 EndProject
@@ -17,13 +15,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6D0088B4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{3F3A52B6-24A5-48E7-9C55-A8E170218570}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedList.API.Application", "SharedList.API.Application\SharedList.API.Application.csproj", "{CC305EE1-E2C6-44CA-8B84-A5872B07A346}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedList.API.Application", "SharedList.API.Application\SharedList.API.Application.csproj", "{CC305EE1-E2C6-44CA-8B84-A5872B07A346}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedList.Core", "SharedList.Core\SharedList.Core.csproj", "{F9B8D4DD-C7E6-46CA-A96B-A5B946AD0190}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedList.Core", "SharedList.Core\SharedList.Core.csproj", "{F9B8D4DD-C7E6-46CA-A96B-A5B946AD0190}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedList.Core.Models", "SharedList.Core.Models\SharedList.Core.Models.csproj", "{C9782615-9ABA-44CA-80D3-B44D5BEB1608}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedList.Core.Models", "SharedList.Core.Models\SharedList.Core.Models.csproj", "{C9782615-9ABA-44CA-80D3-B44D5BEB1608}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{179E1289-F825-4FBF-B89D-139408C46010}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedList.Persistence", "SharedList.Persistence\SharedList.Persistence.csproj", "{919406CB-864E-4D60-867F-7F398004F64A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedList.Migrations", "SharedList.Migrations\SharedList.Migrations.csproj", "{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,14 @@ Global
 		{C9782615-9ABA-44CA-80D3-B44D5BEB1608}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9782615-9ABA-44CA-80D3-B44D5BEB1608}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9782615-9ABA-44CA-80D3-B44D5BEB1608}.Release|Any CPU.Build.0 = Release|Any CPU
+		{919406CB-864E-4D60-867F-7F398004F64A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{919406CB-864E-4D60-867F-7F398004F64A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{919406CB-864E-4D60-867F-7F398004F64A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{919406CB-864E-4D60-867F-7F398004F64A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,10 +65,11 @@ Global
 		{BAFC366F-15E8-42C1-BC79-36E604F44127} = {A4248FC4-041C-4E73-B22E-276C4326404A}
 		{1A49E80B-A339-443C-9804-FC26B695DE48} = {3F3A52B6-24A5-48E7-9C55-A8E170218570}
 		{A4248FC4-041C-4E73-B22E-276C4326404A} = {3F3A52B6-24A5-48E7-9C55-A8E170218570}
-		{6D3628FE-7CD9-41D1-A557-735C93AEA825} = {3F3A52B6-24A5-48E7-9C55-A8E170218570}
 		{CC305EE1-E2C6-44CA-8B84-A5872B07A346} = {1A49E80B-A339-443C-9804-FC26B695DE48}
 		{F9B8D4DD-C7E6-46CA-A96B-A5B946AD0190} = {F7D7914B-6FC5-4BE6-9C7D-1F550214EFDD}
 		{C9782615-9ABA-44CA-80D3-B44D5BEB1608} = {F7D7914B-6FC5-4BE6-9C7D-1F550214EFDD}
+		{919406CB-864E-4D60-867F-7F398004F64A} = {179E1289-F825-4FBF-B89D-139408C46010}
+		{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2} = {179E1289-F825-4FBF-B89D-139408C46010}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE8010F7-ADA7-4434-B34C-532107250743}
