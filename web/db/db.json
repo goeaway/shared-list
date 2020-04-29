@@ -1,0 +1,20 @@
+{
+    "lists": [
+        { 
+            "id": "asasf", 
+            "name": "Meaty meat meat", 
+            "items": [
+                { "id": "random", "value": "Beef", "notes": ""},
+                { "id": "something-else", "value": "Chicken", "notes": "lots of it"}
+            ]
+        },
+        { 
+            "id": "asdfasfasf", 
+            "name": "Veggies", 
+            "items": [
+                { "id": "1", "value": "Carrots", "notes": "lots of it"},
+                { "id": "2", "value": "Potatoes", "notes": ""}
+            ]
+        }
+    ]
+}
