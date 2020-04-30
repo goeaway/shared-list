@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharedList.Persistence.Entities
+namespace SharedList.Core.Models.DTOs
 {
-    public class ListItem
+    public class ListItemDTO
     {
         public int Id { get; set; }
         public string Value { get; set; }
         public string Notes { get; set; }
-
+        public bool Completed { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
-
-        public List ParentList { get; set; }
     }
 }

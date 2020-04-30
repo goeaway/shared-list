@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using SharedList.Persistence.Entities;
+using SharedList.Persistence.Models.Entities;
 
 namespace SharedList.Persistence
 {

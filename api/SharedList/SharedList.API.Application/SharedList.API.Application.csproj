@@ -10,4 +10,10 @@
     <PackageReference Include="MediatR" Version="8.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SharedList.Core.Models\SharedList.Core.Models.csproj" />
+    <ProjectReference Include="..\SharedList.Core\SharedList.Core.csproj" />
+    <ProjectReference Include="..\SharedList.Persistence\SharedList.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -23,9 +23,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedList.Core.Models", "S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{179E1289-F825-4FBF-B89D-139408C46010}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedList.Persistence", "SharedList.Persistence\SharedList.Persistence.csproj", "{919406CB-864E-4D60-867F-7F398004F64A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedList.Persistence", "SharedList.Persistence\SharedList.Persistence.csproj", "{919406CB-864E-4D60-867F-7F398004F64A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedList.Migrations", "SharedList.Migrations\SharedList.Migrations.csproj", "{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedList.Migrations", "SharedList.Migrations\SharedList.Migrations.csproj", "{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedList.API.Tests", "SharedList.API.Tests\SharedList.API.Tests.csproj", "{4AA9C5DC-66E0-4B85-9146-5ACDB08872CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AA9C5DC-66E0-4B85-9146-5ACDB08872CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AA9C5DC-66E0-4B85-9146-5ACDB08872CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AA9C5DC-66E0-4B85-9146-5ACDB08872CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AA9C5DC-66E0-4B85-9146-5ACDB08872CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +76,7 @@ Global
 		{C9782615-9ABA-44CA-80D3-B44D5BEB1608} = {F7D7914B-6FC5-4BE6-9C7D-1F550214EFDD}
 		{919406CB-864E-4D60-867F-7F398004F64A} = {179E1289-F825-4FBF-B89D-139408C46010}
 		{B29F5C45-4DEB-4AD2-8B2B-C6AD4C12B9E2} = {179E1289-F825-4FBF-B89D-139408C46010}
+		{4AA9C5DC-66E0-4B85-9146-5ACDB08872CA} = {6D0088B4-4013-40AC-8641-3D30E1BFBF2A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE8010F7-ADA7-4434-B34C-532107250743}

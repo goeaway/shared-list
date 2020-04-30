@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharedList.Persistence.Entities
+namespace SharedList.Persistence.Models.Entities
 {
     public class List
     {

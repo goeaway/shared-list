@@ -15,9 +15,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SharedList.API.Application\SharedList.API.Application.csproj" />
+    <ProjectReference Include="..\SharedList.Core.Models\SharedList.Core.Models.csproj" />
+    <ProjectReference Include="..\SharedList.Core\SharedList.Core.csproj" />
     <ProjectReference Include="..\SharedList.Migrations\SharedList.Migrations.csproj" />
     <ProjectReference Include="..\SharedList.Persistence\SharedList.Persistence.csproj" />
   </ItemGroup>
