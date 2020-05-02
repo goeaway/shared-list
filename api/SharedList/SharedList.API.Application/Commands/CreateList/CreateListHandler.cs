@@ -30,6 +30,7 @@ namespace SharedList.API.Application.Commands.CreateList
             {
                 Id = _randomisedWordProvider.CreateWordsString(),
                 Name = request.DTO.Name,
+                Created = _nowProvider.Now,
                 Items = request.DTO.Items?.Select(i => new ListItem
                 {
                     Value = i.Value,
@@ -37,7 +38,6 @@ namespace SharedList.API.Application.Commands.CreateList
                     Completed = i.Completed,
                     Created = _nowProvider.Now
                 }).ToList(),
-                Created = _nowProvider.Now
             };
 
             await _context.Lists.AddAsync(list, cancellationToken);

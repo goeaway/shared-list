@@ -16,9 +16,10 @@ import { useToasts } from "react-toast-notifications";
 export interface ListProps {
     list: ListDTO;
     canCopy: boolean;
+    onChange?: (newList: ListDTO) => void;
 }
 
-const List : FC<ListProps> = ({ list, canCopy }) => {
+const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
     const [items, setItems] = useState(list.items);
     const [stopListKeyboardControls, setStopListKeyboardControls] = useState(false);
     const [inputFocus, setInputFocus] = useState(true);
@@ -35,6 +36,14 @@ const List : FC<ListProps> = ({ list, canCopy }) => {
         }
     }, [space]);
 
+    useEffect(() => {
+        onChange({ id: list.id, name: listName, items });
+    }, [items]);
+
+    useEffect(() => {
+        onChange({ id: list.id, name: listName, items });
+    }, [listName]);
+
     const inputOnAddHandler = (value: string) => {
         setItems(i => [...i, { id: v1(), value, notes: "", complete: false }]);
     }
@@ -45,7 +54,7 @@ const List : FC<ListProps> = ({ list, canCopy }) => {
             const existing = copy.findIndex(c => c.id === id);
             copy.splice(existing, 1, item);
             return copy;
-        })
+        });
     }
 
     const itemEditingChangedHandler = (editing: boolean) => {

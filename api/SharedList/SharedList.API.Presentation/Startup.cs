@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Serilog;
 using SharedList.API.Application.Exceptions;
@@ -38,19 +40,20 @@ namespace SharedList.API.Presentation
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     x => x.MigrationsAssembly("SharedList.Migrations")));
 
-            //services.AddIdentity<IdentityUser, IdentityRole>();
-            //services.AddAuthentication(options =>
+            //services.AddAuthentication()
+            //    .AddJwtBearer(options =>
             //    {
-            //        options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-            //        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            //    })
-            //    .AddGoogle(options =>
-            //    {
-            //        options.CallbackPath = "/auth-redirect";
-            //        options.ClientId = "787759781218-74b6fgtbbddggjp9hu68ciqijp61m3h7.apps.googleusercontent.com";
-            //        options.ClientSecret = "2nLpqiAXZyMJQsi9moIQSJ9R";
+            //        options.RequireHttpsMetadata = false;
+            //        options.SaveToken = true;
+            //        options.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            ValidateIssuerSigningKey = true,
+            //            IssuerSigningKey =
+            //                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AppSettings:JwtSecret"])),
+            //            ValidateIssuer = false,
+            //            ValidateAudience = false
+            //        };
             //    });
-            //// https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/google-logins?view=aspnetcore-3.1
 
             services.AddNowProvider();
             services.AddRandomWordsProvider();

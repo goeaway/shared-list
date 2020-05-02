@@ -100,21 +100,5 @@ namespace SharedList.API.Tests.Mapping
 
             Assert.AreEqual(CREATED, dto.Created);
         }
-
-        [TestMethod]
-        public void MapsListItemUpdatedToListItemDTOUpdated()
-        {
-            var UPDATED = new DateTime(2020, 1, 1);
-            var mapper = CreateMapper();
-
-            var listItem = new ListItem
-            {
-                Updated = UPDATED
-            };
-
-            var dto = mapper.Map<ListItemDTO>(listItem);
-
-            Assert.AreEqual(UPDATED, dto.Updated);
-        }
     }
 }

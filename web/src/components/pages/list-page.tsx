@@ -8,13 +8,14 @@ import { useToasts } from "react-toast-notifications";
 
 const ListPage : FC = ({}) => {
     const { id } = useParams();
+    const { replace } = useHistory();
     const [ready, setReady] = useState(false);
     const [list, setList] = useState<ListDTO>();
     const { addToast } = useToasts();
 
     useEffect(() => {
         if(id) {
-            fetch(`http://localhost:3000/lists/${id}`)
+            fetch(`https://localhost:44327/list/get/${id}`)
                 .then((response) => {
                     if(response.ok) {
                         response.json().then((data: ListDTO) => {
@@ -44,10 +45,40 @@ const ListPage : FC = ({}) => {
         }
     }, [id]);
 
+    const onListChangeHandler = async (newList: ListDTO) => {
+        // if we have an id just update, otherwise create
+        if(newList.id) {
+            const result = await fetch("https://localhost:44327/list/update", {
+                method: "PUT",
+                body: JSON.stringify(newList)
+            });
+
+            if(!result.ok) {
+                addToast(<span>Couldn't update list. Your changes might not be synchronised.</span>, {
+                    appearance: 'error'
+                });
+            }
+        } else {
+            const result = await fetch("https://localhost:44327/list/create", {
+                method: "POST",
+                body: JSON.stringify(newList)
+            });
+
+            if(!result.ok) {
+                addToast(<span>Couldn't create list. Your changes might not be synchronised.</span>, {
+                    appearance: 'error'
+                });
+            } else {
+                const newId = await result.json();
+                replace(newId);
+            }
+        }
+    }
+
     return (
         <AppContainer>
             {!ready && <LoadingContainer>Loading...</LoadingContainer>}
-            {ready && list && <ListContainer><List list={list} canCopy={false} /> </ListContainer>}
+            {ready && list && <ListContainer><List list={list} canCopy={false} onChange={onListChangeHandler} /> </ListContainer>}
         </AppContainer>
     );
 }

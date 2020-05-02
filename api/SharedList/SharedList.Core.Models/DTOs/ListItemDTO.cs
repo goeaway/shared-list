@@ -11,6 +11,5 @@ namespace SharedList.Core.Models.DTOs
         public string Notes { get; set; }
         public bool Completed { get; set; }
         public DateTime Created { get; set; }
-        public DateTime? Updated { get; set; }
     }
 }

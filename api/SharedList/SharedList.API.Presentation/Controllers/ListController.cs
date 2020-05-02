@@ -24,25 +24,25 @@ namespace SharedList.API.Presentation.Controllers
         }
 
         [HttpGet]
-        public Task<ListDTO> GetList(string id)
+        public Task<ListDTO> Get(string id)
         {
             return _mediator.Send(new GetListRequest(id));
         }
 
         [HttpPost]
-        public Task<string> CreateList(ListDTO dto)
+        public Task<string> Create(ListDTO dto)
         {
             return _mediator.Send(new CreateListRequest(dto));
         }
 
         [HttpPut]
-        public Task UpdateList(ListDTO dto)
+        public Task Update(ListDTO dto)
         {
             return _mediator.Send(new UpdateListRequest(dto));
         }
 
         [HttpDelete]
-        public Task DeleteList(string id)
+        public Task Delete(string id)
         {
             return _mediator.Send(new DeleteListRequest(id));
         }

@@ -198,29 +198,6 @@ namespace SharedList.API.Tests.Commands
         }
 
         [TestMethod]
-        public async Task AddsNewListToDBWithDTOListItemWithNoUpdated()
-        {
-            var (context, nowProvider, randomisedWordsProvider) = CreateDeps();
-
-            using (context)
-            {
-                var dto = new ListDTO
-                {
-                    Items = new List<ListItemDTO>
-                    {
-                        new ListItemDTO()
-                    }
-                };
-
-                var request = new CreateListRequest(dto);
-                var handler = new CreateListHandler(context, nowProvider, randomisedWordsProvider);
-                var result = await handler.Handle(request, CancellationToken.None);
-
-                Assert.IsNull(context.ListItems.First().Updated);
-            }
-        }
-
-        [TestMethod]
         public async Task AddsNewListToDBWithCreatedNow()
         {
             var EXPECTED_DATE = new DateTime(2020, 2, 1);
