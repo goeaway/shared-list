@@ -18,6 +18,13 @@ namespace SharedList.API.Presentation
             return collection;
         }
 
+        public static IServiceCollection AddRandomWordsProvider(this IServiceCollection collection)
+        {
+            var random = new Random();
+            collection.AddSingleton<IRandomisedWordProvider>(new RandomisedWordProvider(random));
+            return collection;
+        }
+
         public static IServiceCollection AddLogger(this IServiceCollection collection)
         {
             var path = Path.Combine(AppContext.BaseDirectory, "log-{Date}.log");

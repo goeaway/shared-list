@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,18 +15,28 @@ namespace SharedList.API.Application.Commands.CreateList
     {
         private readonly SharedListContext _context;
         private readonly INowProvider _nowProvider;
+        private readonly IRandomisedWordProvider _randomisedWordProvider;
 
-        public CreateListHandler(SharedListContext context, INowProvider nowProvider)
+        public CreateListHandler(SharedListContext context, INowProvider nowProvider, IRandomisedWordProvider randomisedWordProvider)
         {
             _context = context;
             _nowProvider = nowProvider;
+            _randomisedWordProvider = randomisedWordProvider;
         }
 
         public async Task<string> Handle(CreateListRequest request, CancellationToken cancellationToken)
         {
             var list = new List
             {
-                Name = request.Name,
+                Id = _randomisedWordProvider.CreateWordsString(),
+                Name = request.DTO.Name,
+                Items = request.DTO.Items?.Select(i => new ListItem
+                {
+                    Value = i.Value,
+                    Notes = i.Notes,
+                    Completed = i.Completed,
+                    Created = _nowProvider.Now
+                }).ToList(),
                 Created = _nowProvider.Now
             };
 

@@ -30,9 +30,9 @@ namespace SharedList.API.Presentation.Controllers
         }
 
         [HttpPost]
-        public Task<string> CreateList(string name)
+        public Task<string> CreateList(ListDTO dto)
         {
-            return _mediator.Send(new CreateListRequest(name));
+            return _mediator.Send(new CreateListRequest(dto));
         }
 
         [HttpPut]

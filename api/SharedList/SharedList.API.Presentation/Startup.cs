@@ -53,6 +53,7 @@ namespace SharedList.API.Presentation
             //// https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/google-logins?view=aspnetcore-3.1
 
             services.AddNowProvider();
+            services.AddRandomWordsProvider();
             services.AddLogger();
             services.AddAutoMapper(typeof(List));
             services.AddMediatR(Assembly.GetAssembly(typeof(ValidationBehaviour<,>)));
