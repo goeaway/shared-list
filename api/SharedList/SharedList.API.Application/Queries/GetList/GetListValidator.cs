@@ -10,8 +10,8 @@ namespace SharedList.API.Application.Queries.GetList
         public GetListValidator()
         {
             RuleFor(model => model.Id)
-                .NotNull()
-                .WithMessage("Id must not be null");
+                .NotEmpty()
+                .WithMessage("Id not set");
         }
     }
 }

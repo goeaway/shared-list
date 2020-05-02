@@ -9,7 +9,7 @@ namespace SharedList.API.Application.Commands.DeleteList
     {
         public DeleteListValidator()
         {
-            RuleFor(x => x.Id).NotNull().WithMessage("Id must not be null");
+            RuleFor(x => x.Id).NotEmpty().WithMessage("Id must not be null");
         }
     }
 }

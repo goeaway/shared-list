@@ -13,9 +13,13 @@ namespace SharedList.API.Application.Commands.CreateList
                 .NotNull()
                 .WithMessage("DTO must not be null");
 
-            RuleFor(x => x.DTO.Name)
-                .NotNull()
-                .WithMessage("Name must not be null");
+            When(x => x.DTO != null, () =>
+            {
+                RuleFor(x => x.DTO.Name)
+                    .NotEmpty()
+                    .WithMessage("Name must not be empty");
+            });
+
         }
     }
 }
