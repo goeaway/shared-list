@@ -253,7 +253,7 @@ namespace SharedList.API.Tests.Commands
         public async Task RemovesOldListItemsForList()
         {
             const string ID = "id";
-            const int ITEM_ID = 1;
+            const string ITEM_ID = "1";
             var (context, nowProvider) = CreateDeps();
             using (context)
             {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -17,6 +18,7 @@ using Newtonsoft.Json;
 using Serilog;
 using SharedList.API.Application.Exceptions;
 using SharedList.API.Application.Pipeline;
+using SharedList.API.Application.Queries.GetList;
 using SharedList.Persistence;
 using SharedList.Persistence.Models.Entities;
 
@@ -31,29 +33,33 @@ namespace SharedList.API.Presentation
 
         public IConfiguration Configuration { get; }
 
+        private const string AllowSpecificOriginsCORSPolicy = "allowSpecificOrigins";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddCors(options =>
+            {
+                options.AddPolicy(AllowSpecificOriginsCORSPolicy, builder =>
+                    {
+                        builder.WithOrigins("http://localhost:8080");
+                        builder.AllowAnyMethod();
+                        builder.AllowAnyHeader();
+                        builder.AllowCredentials();
+                    });
+            });
+
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddFluentValidation(fv =>
+                {
+                    fv.RegisterValidatorsFromAssemblyContaining<GetListValidator>();
+                });
 
             services.AddDbContext<SharedListContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     x => x.MigrationsAssembly("SharedList.Migrations")));
-
-            //services.AddAuthentication()
-            //    .AddJwtBearer(options =>
-            //    {
-            //        options.RequireHttpsMetadata = false;
-            //        options.SaveToken = true;
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            ValidateIssuerSigningKey = true,
-            //            IssuerSigningKey =
-            //                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AppSettings:JwtSecret"])),
-            //            ValidateIssuer = false,
-            //            ValidateAudience = false
-            //        };
-            //    });
 
             services.AddNowProvider();
             services.AddRandomWordsProvider();
@@ -77,6 +83,7 @@ namespace SharedList.API.Presentation
 
             app.UseExceptionHandler(ExceptionHandler);
             app.UseHttpsRedirection();
+            app.UseCors(AllowSpecificOriginsCORSPolicy);
             app.UseMvc();
             app.UseAuthentication();
         }
@@ -105,6 +112,11 @@ namespace SharedList.API.Presentation
                 {
                     ctx.Response.StatusCode = 400;
                     errorList.AddRange((exception as RequestValidationFailedException).Failures.Select(f => f.ErrorMessage));
+                }
+                else if (exception is RequestFailedException)
+                {
+                    var requestFailedException = exception as RequestFailedException;
+                    ctx.Response.StatusCode = (int)requestFailedException.Code;
                 }
 
                 await ctx.Response.WriteAsync(JsonConvert.SerializeObject(errorList));

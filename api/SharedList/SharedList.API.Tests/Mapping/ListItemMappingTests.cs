@@ -24,7 +24,7 @@ namespace SharedList.API.Tests.Mapping
         [TestMethod]
         public void MapsListItemIdToListItemDTOId()
         {
-            const int ID = 1;
+            const string ID = "1";
             var mapper = CreateMapper();
 
             var listItem = new ListItem

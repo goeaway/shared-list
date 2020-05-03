@@ -50,6 +50,7 @@ const ListPage : FC = ({}) => {
         if(newList.id) {
             const result = await fetch("https://localhost:44327/list/update", {
                 method: "PUT",
+                headers: new Headers({ 'content-type': 'application/json' }),
                 body: JSON.stringify(newList)
             });
 
@@ -61,6 +62,7 @@ const ListPage : FC = ({}) => {
         } else {
             const result = await fetch("https://localhost:44327/list/create", {
                 method: "POST",
+                headers: new Headers({ 'content-type': 'application/json' }),
                 body: JSON.stringify(newList)
             });
 
@@ -69,7 +71,7 @@ const ListPage : FC = ({}) => {
                     appearance: 'error'
                 });
             } else {
-                const newId = await result.json();
+                const newId = await result.text();
                 replace(newId);
             }
         }

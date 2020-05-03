@@ -93,6 +93,33 @@ namespace SharedList.API.Tests.Commands
         }
 
         [TestMethod]
+        public async Task AddsNewListToDBWithDTOListItemWithId()
+        {
+            const string EXPECTED_ITEM_ID = "item id";
+            var (context, nowProvider, randomisedWordsProvider) = CreateDeps();
+
+            using (context)
+            {
+                var dto = new ListDTO
+                {
+                    Items = new List<ListItemDTO>
+                    {
+                        new ListItemDTO
+                        {
+                            Id = EXPECTED_ITEM_ID
+                        }
+                    }
+                };
+
+                var request = new CreateListRequest(dto);
+                var handler = new CreateListHandler(context, nowProvider, randomisedWordsProvider);
+                var result = await handler.Handle(request, CancellationToken.None);
+
+                Assert.AreEqual(EXPECTED_ITEM_ID, context.ListItems.First().Id);
+            }
+        }
+
+        [TestMethod]
         public async Task AddsNewListToDBWithDTOListItemWithValue()
         {
             const string EXPECTED_ITEM_VALUE = "item value";

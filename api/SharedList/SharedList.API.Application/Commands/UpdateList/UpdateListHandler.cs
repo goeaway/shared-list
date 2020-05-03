@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SharedList.Core.Abstractions;
 using SharedList.Persistence;
 using SharedList.Persistence.Models.Entities;
@@ -24,7 +25,9 @@ namespace SharedList.API.Application.Commands.UpdateList
 
         public async Task<Unit> Handle(UpdateListRequest request, CancellationToken cancellationToken)
         {
-            var existing = await _context.Lists.FindAsync(request.DTO.Id);
+            var existing = await _context.Lists
+                .Include(l => l.Items)
+                .FirstAsync(l => l.Id == request.DTO.Id);
 
             if (existing != null)
             {
@@ -38,6 +41,7 @@ namespace SharedList.API.Application.Commands.UpdateList
 
                 existing.Items = request.DTO.Items?.Select(i => new ListItem
                 {
+                    Id = i.Id,
                     Value = i.Value,
                     Created = _nowProvider.Now,
                     Notes = i.Notes,

@@ -37,11 +37,15 @@ const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
     }, [space]);
 
     useEffect(() => {
-        onChange({ id: list.id, name: listName, items });
+        if(items !== list.items) {
+            onChange({ id: list.id, name: listName, items });
+        }
     }, [items]);
 
     useEffect(() => {
-        onChange({ id: list.id, name: listName, items });
+        if(listName !== list.name) {
+            onChange({ id: list.id, name: listName, items });
+        }
     }, [listName]);
 
     const inputOnAddHandler = (value: string) => {

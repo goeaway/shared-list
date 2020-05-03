@@ -33,11 +33,12 @@ namespace SharedList.API.Application.Commands.CreateList
                 Created = _nowProvider.Now,
                 Items = request.DTO.Items?.Select(i => new ListItem
                 {
+                    Id = i.Id,
                     Value = i.Value,
                     Notes = i.Notes,
                     Completed = i.Completed,
                     Created = _nowProvider.Now
-                }).ToList(),
+                }).ToList()
             };
 
             await _context.Lists.AddAsync(list, cancellationToken);

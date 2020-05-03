@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SharedList.API.Application.Commands.CreateList;
 using SharedList.API.Application.Commands.DeleteList;
@@ -23,25 +24,25 @@ namespace SharedList.API.Presentation.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet]
+        [HttpGet("get/{id}")]
         public Task<ListDTO> Get(string id)
         {
             return _mediator.Send(new GetListRequest(id));
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public Task<string> Create(ListDTO dto)
         {
             return _mediator.Send(new CreateListRequest(dto));
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         public Task Update(ListDTO dto)
         {
             return _mediator.Send(new UpdateListRequest(dto));
         }
 
-        [HttpDelete]
+        [HttpDelete("delete")]
         public Task Delete(string id)
         {
             return _mediator.Send(new DeleteListRequest(id));

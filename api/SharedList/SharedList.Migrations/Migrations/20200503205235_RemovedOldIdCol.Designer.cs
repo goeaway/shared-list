@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SharedList.Persistence;
 
 namespace SharedList.Migrations.Migrations
 {
     [DbContext(typeof(SharedListContext))]
-    partial class SharedListContextModelSnapshot : ModelSnapshot
+    [Migration("20200503205235_RemovedOldIdCol")]
+    partial class RemovedOldIdCol
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,8 +39,9 @@ namespace SharedList.Migrations.Migrations
 
             modelBuilder.Entity("SharedList.Persistence.Models.Entities.ListItem", b =>
                 {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("ListItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Completed");
 
@@ -50,7 +53,7 @@ namespace SharedList.Migrations.Migrations
 
                     b.Property<string>("Value");
 
-                    b.HasKey("Id");
+                    b.HasKey("ListItemId");
 
                     b.HasIndex("ParentListId");
 
