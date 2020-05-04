@@ -27,11 +27,11 @@ namespace SharedList.API.Application.Commands.UpdateList
         {
             var existing = await _context.Lists
                 .Include(l => l.Items)
-                .FirstAsync(l => l.Id == request.DTO.Id);
+                .FirstOrDefaultAsync(l => l.Id == request.DTO.Id);
 
             if (existing != null)
             {
-                existing.Name = request.DTO.Name;
+                existing.Name = request.DTO.Name?.Trim();
                 existing.Updated = _nowProvider.Now;
                 // remove the old items as we're going to overwrite them
                 foreach (var removedItem in existing.Items)
@@ -39,12 +39,13 @@ namespace SharedList.API.Application.Commands.UpdateList
                     _context.ListItems.Remove(removedItem);
                 }
 
-                existing.Items = request.DTO.Items?.Select(i => new ListItem
+                existing.Items = request.DTO.Items?.Select((i, index) => new ListItem
                 {
-                    Id = i.Id,
-                    Value = i.Value,
+                    Id = i.Id.Trim(),
+                    Order = index,
+                    Value = i.Value?.Trim(),
                     Created = _nowProvider.Now,
-                    Notes = i.Notes,
+                    Notes = i.Notes?.Trim(),
                     Completed = i.Completed,
                     ParentList = existing
                 }).ToList();

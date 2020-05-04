@@ -61,7 +61,7 @@ describe("Tests the list item component", () => {
     });
 
     it("should call the onCompletionChanged callback when the checkbox input is checked", () => {
-        const testDTO = { id: "something", notes: "testnotes", value: "testvalue", complete: false };
+        const testDTO = { id: "something", notes: "testnotes", value: "testvalue", completed: false };
         renderDraggableListItem(testDTO);
         fireEvent.click(screen.getByRole("list-item-check"));
         expect(onItemEdited.calledOnce).toBe(true);
@@ -145,7 +145,7 @@ describe("Tests the list item component", () => {
     });
 
     it("should display none if hide prop is true and the list item is complete", () => {
-        dto.complete = true;
+        dto.completed = true;
         renderDraggableListItem(dto, 0, true);
         expect(screen.queryByRole("list-item")).toBeNull();
     });

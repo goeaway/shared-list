@@ -9,6 +9,7 @@ using SharedList.API.Application.Commands.CreateList;
 using SharedList.API.Application.Commands.DeleteList;
 using SharedList.API.Application.Commands.UpdateList;
 using SharedList.API.Application.Queries.GetList;
+using SharedList.API.Application.Queries.GetListName;
 using SharedList.Core.Models.DTOs;
 
 namespace SharedList.API.Presentation.Controllers
@@ -22,6 +23,12 @@ namespace SharedList.API.Presentation.Controllers
         public ListController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet("getNames")]
+        public Task<IEnumerable<ListNameAndIdDTO>> GetNames(string[] ids)
+        {
+            return _mediator.Send(new GetListNamesRequest(ids));
         }
 
         [HttpGet("get/{id}")]

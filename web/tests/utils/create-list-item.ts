@@ -5,6 +5,6 @@ export default function createListItem(id?: string) : ListItemDTO {
         id: id || "id",
         value: "value",
         notes: "notes",
-        complete: false
+        completed: false
     }
 }

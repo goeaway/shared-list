@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -28,13 +29,14 @@ namespace SharedList.API.Application.Queries.GetList
         {
             var list = await _context.Lists
                 .Include(l => l.Items)
-                .FirstAsync(l => l.Id == request.Id);
+                .FirstOrDefaultAsync(l => l.Id == request.Id);
 
             if (list == null)
             {
                 throw new RequestFailedException($"Could not find list with id {request.Id}", HttpStatusCode.NotFound);
             }
 
+            list.Items = list.Items.OrderBy(i => i.Order).ToList();
             return _mapper.Map<ListDTO>(list);
         }
     }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SharedList.Persistence;
 
 namespace SharedList.Migrations.Migrations
 {
     [DbContext(typeof(SharedListContext))]
-    partial class SharedListContextModelSnapshot : ModelSnapshot
+    [Migration("20200504121847_AddedOrderToListItem")]
+    partial class AddedOrderToListItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

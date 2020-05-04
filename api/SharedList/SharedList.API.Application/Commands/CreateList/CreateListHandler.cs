@@ -29,13 +29,14 @@ namespace SharedList.API.Application.Commands.CreateList
             var list = new List
             {
                 Id = _randomisedWordProvider.CreateWordsString(),
-                Name = request.DTO.Name,
+                Name = request.DTO.Name?.Trim(),
                 Created = _nowProvider.Now,
-                Items = request.DTO.Items?.Select(i => new ListItem
+                Items = request.DTO.Items?.Select((i, index) => new ListItem
                 {
-                    Id = i.Id,
-                    Value = i.Value,
-                    Notes = i.Notes,
+                    Id = i.Id.Trim(),
+                    Order = index,
+                    Value = i.Value?.Trim(),
+                    Notes = i.Notes?.Trim(),
                     Completed = i.Completed,
                     Created = _nowProvider.Now
                 }).ToList()

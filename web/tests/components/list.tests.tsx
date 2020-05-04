@@ -58,7 +58,7 @@ describe("Tests the list component", () => {
 
     it("should render with a list item component for each list item on the ListDTO prop", () => {
         const complete = createListItem("0");
-        complete.complete = true;
+        complete.completed = true;
         dto.items = [complete, createListItem("1")];
         renderList(dto);
         expect(screen.getAllByRole("list-item").length).toBe(2);
@@ -127,7 +127,7 @@ describe("Tests the list component", () => {
 
     it("should hide completed items when hide complete button is clicked", () => {
         const completed = createListItem("complete");
-        completed.complete = true;
+        completed.completed = true;
         dto.items = [createListItem("2"), completed, createListItem("1")];
 
         renderList(dto);
@@ -158,7 +158,7 @@ describe("Tests the list component", () => {
 
     it("should set all completed items as incomplete", () => {
         const complete = createListItem("0");
-        complete.complete = true;
+        complete.completed = true;
         dto.items = [complete];
         renderList(dto);
         fireEvent.click(screen.getByText("Uncomplete All"));

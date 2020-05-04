@@ -11,6 +11,7 @@ namespace SharedList.Persistence.Models.Entities
         public string Notes { get; set; }
         public bool Completed { get; set; }
 
+        public int Order { get; set; }
         public DateTime Created { get; set; }
 
         public List ParentList { get; set; }

@@ -8,7 +8,7 @@ import ListItem from "./list-item";
 import { v1 } from "uuid";
 import useKeyPress from "../hooks/use-key-press";
 import useClickOutside from "../hooks/use-click-outside";
-import { FaCopy, FaUndoAlt, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaShareAlt, FaUndoAlt, FaEye, FaEyeSlash } from "react-icons/fa";
 import styled from "styled-components";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useToasts } from "react-toast-notifications";
@@ -49,7 +49,7 @@ const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
     }, [listName]);
 
     const inputOnAddHandler = (value: string) => {
-        setItems(i => [...i, { id: v1(), value, notes: "", complete: false }]);
+        setItems(i => [...i, { id: v1(), value, notes: "", completed: false }]);
     }
 
     const updateItemHandler = (id: string, item: ListItemDTO) => {
@@ -118,7 +118,7 @@ const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
     const onUnCompleteAllClickHandler = () => {
         setItems(i => {
             const copy = [...i];
-            copy.forEach(c => c.complete = false);
+            copy.forEach(c => c.completed = false);
             return copy;
         });
 
@@ -132,7 +132,7 @@ const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
         <StyledContainer role="list">
             <ControlBar role="list-control-bar">
                 <ControlBarInner>
-                    <AccentButton hideTextXS disabled={!canCopy} role="copy-url" onClick={onCopyURLClickHandler}><FaCopy /><span>&nbsp;Copy List URL</span></AccentButton>
+                    <AccentButton hideTextXS disabled={!canCopy} role="copy-url" onClick={onCopyURLClickHandler}><FaShareAlt /><span>&nbsp;Share List</span></AccentButton>
                 </ControlBarInner>
                 <ControlBarInner>
                     <DefaultButton hideTextXS role="reset-completed" onClick={onUnCompleteAllClickHandler}><FaUndoAlt /><span>&nbsp;Uncomplete All</span></DefaultButton>
@@ -141,7 +141,7 @@ const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
             </ControlBar>
             <ListName name={listName} onChange={listNameOnChangedHandler} onEditChanged={itemEditingChangedHandler} />
             <ListInput onAdd={inputOnAddHandler} onLoseFocus={inputRequestLoseFocusHandler} onRequestFocus={inputRequestFocusHandler} focus={inputFocus} clickOutsideRef={outsideInputClickRef} />
-            <div role="list-items-container">
+            <ItemContainer role="list-items-container">
                 {items.length === 0 && <ListEmpty />}
                 {items.length > 0 && 
                     <DragDropContext onDragEnd={dragEndHandler}>
@@ -162,7 +162,7 @@ const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
                         </Droppable>
                     </DragDropContext>
                 }
-            </div>
+            </ItemContainer>
         </StyledContainer>
     );
 }
@@ -221,4 +221,8 @@ const ControlBarInner = styled.div`
     > *:last-child {
         margin-right: 0;
     }
+`
+
+const ItemContainer = styled.div`
+    transition: width .3s ease;
 `

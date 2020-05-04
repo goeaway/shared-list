@@ -1,6 +1,7 @@
-import React, { FC} from "react";
+import React, { FC, useEffect, useState} from "react";
 import styled from "styled-components";
 import { FaClipboard } from "react-icons/fa";
+import { CSSTransition } from "react-transition-group";
 
 const ListEmpty : FC = () => {
     return (
@@ -25,7 +26,7 @@ const StyledContainer = styled.div`
         margin-bottom: 1rem;
     }
 `
-
+    
 const Text = styled.span`
     font-size: 14px;
     color: ${p => p.theme.fontLight4};

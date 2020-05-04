@@ -8,6 +8,10 @@ export interface ListItemDTO {
     value: string;
     notes: string;
     id: string;
-    complete: boolean;
+    completed: boolean;
 }
 
+export interface NameAndId<TId> {
+    name: string;
+    id: TId;
+}
