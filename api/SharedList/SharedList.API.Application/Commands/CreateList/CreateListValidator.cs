@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace SharedList.API.Application.Commands.CreateList
 {
@@ -18,6 +19,14 @@ namespace SharedList.API.Application.Commands.CreateList
                 RuleFor(x => x.DTO.Name)
                     .NotEmpty()
                     .WithMessage("Name must not be empty");
+
+                When(x => x.DTO.Items != null && x.DTO.Items.Any(), () =>
+                {
+                    RuleForEach(x => x.DTO.Items).ChildRules(item =>
+                    {
+                        item.RuleFor(x => x.Id).NotEmpty().WithMessage("List Item Id must not be empty");
+                    });
+                });
             });
 
         }

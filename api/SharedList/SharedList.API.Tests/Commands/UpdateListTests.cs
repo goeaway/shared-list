@@ -108,6 +108,7 @@ namespace SharedList.API.Tests.Commands
         public async Task UpdatesListItemValues()
         {
             const string ID = "id";
+            const string ITEM_ID = "1";
             const string ITEM_VALUES = "value";
             var (context, nowProvider) = CreateDeps();
             using (context)
@@ -127,6 +128,7 @@ namespace SharedList.API.Tests.Commands
                     {
                         new ListItemDTO
                         {
+                            Id = ITEM_ID,
                             Value = ITEM_VALUES
                         }
                     }
@@ -145,6 +147,7 @@ namespace SharedList.API.Tests.Commands
         public async Task UpdatesListItemNotes()
         {
             const string ID = "id";
+            const string ITEM_ID = "1";
             const string ITEM_NOTES = "notes";
             var (context, nowProvider) = CreateDeps();
             using (context)
@@ -164,6 +167,7 @@ namespace SharedList.API.Tests.Commands
                     {
                         new ListItemDTO
                         {
+                            Id = ITEM_ID,
                             Notes = ITEM_NOTES
                         }
                     }
@@ -182,6 +186,7 @@ namespace SharedList.API.Tests.Commands
         public async Task UpdatesListItemCompleted()
         {
             const string ID = "id";
+            const string ITEM_ID = "1";
             const bool COMPLETED = true;
             var (context, nowProvider) = CreateDeps();
             using (context)
@@ -201,6 +206,7 @@ namespace SharedList.API.Tests.Commands
                     {
                         new ListItemDTO
                         {
+                            Id = ITEM_ID,
                             Completed = COMPLETED
                         }
                     }
@@ -219,6 +225,7 @@ namespace SharedList.API.Tests.Commands
         public async Task UpdatesListItemCreated()
         {
             const string ID = "id";
+            const string ITEM_ID = "1";
             var created = new DateTime(2020, 2, 1);
             var (context, nowProvider) = CreateDeps(dateTime: created);
             using (context)
@@ -236,7 +243,10 @@ namespace SharedList.API.Tests.Commands
                     Id = ID,
                     Items = new List<ListItemDTO>
                     {
-                        new ListItemDTO()
+                        new ListItemDTO
+                        {
+                            Id = ITEM_ID
+                        }
                     }
                 };
 

@@ -50,6 +50,48 @@ namespace SharedList.API.Tests.Validators
         }
 
         [TestMethod]
+        public void FailsOnListItemDTONullId()
+        {
+            var request = new UpdateListRequest(new ListDTO
+            {
+                Items = new List<ListItemDTO>
+                {
+                    new ListItemDTO()
+                }
+            });
+
+            var validator = new UpdateListValidator();
+            var result = validator.TestValidate(request);
+            var failures = result.ShouldHaveValidationErrorFor("DTO.Items[0].Id");
+
+            Assert.AreEqual(1, failures.Count());
+            Assert.AreEqual("List Item Id must not be empty", failures.First().ErrorMessage);
+        }
+
+
+        [TestMethod]
+        public void FailsOnListItemDTONullEmpty()
+        {
+            var request = new UpdateListRequest(new ListDTO
+            {
+                Items = new List<ListItemDTO>
+                {
+                    new ListItemDTO
+                    {
+                        Id = string.Empty
+                    }
+                }
+            });
+
+            var validator = new UpdateListValidator();
+            var result = validator.TestValidate(request);
+            var failures = result.ShouldHaveValidationErrorFor("DTO.Items[0].Id");
+
+            Assert.AreEqual(1, failures.Count());
+            Assert.AreEqual("List Item Id must not be empty", failures.First().ErrorMessage);
+        }
+
+        [TestMethod]
         public void PassesWhenIdSet()
         {
             var request = new UpdateListRequest(new ListDTO
@@ -58,6 +100,25 @@ namespace SharedList.API.Tests.Validators
             });
             var validator = new UpdateListValidator();
             validator.ShouldNotHaveValidationErrorFor(r => r.DTO.Id, request);
+        }
+
+        [TestMethod]
+        public void PassesOnSetItemId()
+        {
+            var request = new UpdateListRequest(new ListDTO
+            {
+                Items = new List<ListItemDTO>
+                {
+                    new ListItemDTO
+                    {
+                        Id = "a"
+                    }
+                }
+            });
+
+            var validator = new UpdateListValidator();
+            var result = validator.TestValidate(request);
+            result.ShouldNotHaveValidationErrorFor("DTO.Items[0].Id");
         }
     }
 }

@@ -70,6 +70,7 @@ namespace SharedList.API.Tests.Commands
         [TestMethod]
         public async Task AddsNewListToDBWithDTOListItem()
         {
+            const string ITEM_ID = "1";
             var (context, nowProvider, randomisedWordsProvider) = CreateDeps();
 
             using (context)
@@ -78,7 +79,10 @@ namespace SharedList.API.Tests.Commands
                 {
                     Items = new List<ListItemDTO>
                     {
-                        new ListItemDTO()
+                        new ListItemDTO
+                        {
+                            Id = ITEM_ID
+                        }
                     }
                 };
 
@@ -123,6 +127,7 @@ namespace SharedList.API.Tests.Commands
         public async Task AddsNewListToDBWithDTOListItemWithValue()
         {
             const string EXPECTED_ITEM_VALUE = "item value";
+            const string ITEM_ID = "1";
             var (context, nowProvider, randomisedWordsProvider) = CreateDeps();
 
             using (context)
@@ -133,6 +138,7 @@ namespace SharedList.API.Tests.Commands
                     {
                         new ListItemDTO
                         {
+                            Id = ITEM_ID,
                             Value = EXPECTED_ITEM_VALUE
                         }
                     }
@@ -150,6 +156,7 @@ namespace SharedList.API.Tests.Commands
         public async Task AddsNewListToDBWithDTOListItemWithNotes()
         {
             const string EXPECTED_ITEM_NOTES = "item notes";
+            const string ITEM_ID = "1";
             var (context, nowProvider, randomisedWordsProvider) = CreateDeps();
 
             using (context)
@@ -160,6 +167,7 @@ namespace SharedList.API.Tests.Commands
                     {
                         new ListItemDTO
                         {
+                            Id = ITEM_ID,
                             Notes = EXPECTED_ITEM_NOTES
                         }
                     }
@@ -177,6 +185,7 @@ namespace SharedList.API.Tests.Commands
         public async Task AddsNewListToDBWithDTOListItemWithCompleted()
         {
             const bool EXPECTED_ITEM_COMPLETED = true;
+            const string ITEM_ID = "1";
             var (context, nowProvider, randomisedWordsProvider) = CreateDeps();
 
             using (context)
@@ -187,6 +196,7 @@ namespace SharedList.API.Tests.Commands
                     {
                         new ListItemDTO
                         {
+                            Id = ITEM_ID,
                             Completed = EXPECTED_ITEM_COMPLETED
                         }
                     }
@@ -204,6 +214,7 @@ namespace SharedList.API.Tests.Commands
         public async Task AddsNewListToDBWithDTOListItemWithCreatedNow()
         {
             var EXPECTED_DATE = new DateTime(2020, 1, 1);
+            const string ITEM_ID = "1";
             var (context, nowProvider, randomisedWordsProvider) = CreateDeps(EXPECTED_DATE);
 
             using (context)
@@ -212,7 +223,10 @@ namespace SharedList.API.Tests.Commands
                 {
                     Items = new List<ListItemDTO>
                     {
-                        new ListItemDTO()
+                        new ListItemDTO
+                        {
+                            Id = ITEM_ID
+                        }
                     }
                 };
 
