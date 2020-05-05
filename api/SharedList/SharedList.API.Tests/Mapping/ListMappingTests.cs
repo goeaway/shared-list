@@ -23,7 +23,7 @@ namespace SharedList.API.Tests.Mapping
         }
 
         [TestMethod]
-        public void MapsListIdToListDTOId()
+        public void LISTDTO_MapsListIdToListDTOId()
         {
             const string ID = "id";
             var mapper = CreateMapper();
@@ -39,7 +39,7 @@ namespace SharedList.API.Tests.Mapping
         }
 
         [TestMethod]
-        public void MapsListNameToListDTOName()
+        public void LISTDTO_MapsListNameToListDTOName()
         {
             const string NAME = "name";
             var mapper = CreateMapper();
@@ -55,7 +55,7 @@ namespace SharedList.API.Tests.Mapping
         }
 
         [TestMethod]
-        public void MapsListCreatedToListDTOCreated()
+        public void LISTDTO_MapsListCreatedToListDTOCreated()
         {
             var CREATED = new DateTime(2020, 1, 1);
             var mapper = CreateMapper();
@@ -71,7 +71,7 @@ namespace SharedList.API.Tests.Mapping
         }
 
         [TestMethod]
-        public void MapsListUpdatedToListDTOUpdated()
+        public void LISTDTO_MapsListUpdatedToListDTOUpdated()
         {
             var UPDATED = new DateTime(2020, 2, 1);
             var mapper = CreateMapper();
@@ -87,7 +87,7 @@ namespace SharedList.API.Tests.Mapping
         }
 
         [TestMethod]
-        public void MapsListItemsToListDTOItems()
+        public void LISTDTO_MapsListItemsToListDTOItems()
         {
             var mapper = CreateMapper();
 
@@ -102,6 +102,38 @@ namespace SharedList.API.Tests.Mapping
             var dto = mapper.Map<ListDTO>(list);
 
             Assert.AreEqual(1, dto.Items.Count);
+        }
+
+        [TestMethod]
+        public void LISTNAMEANDIDDTO_MapsListIdToDTOId()
+        {
+            var mapper = CreateMapper();
+            const string ID = "1";
+
+            var list = new List
+            {
+                Id = ID
+            };
+
+            var dto = mapper.Map<ListNameAndIdDTO>(list);
+
+            Assert.AreEqual(ID, dto.Id);
+        }
+
+        [TestMethod]
+        public void LISTNAMEANDIDDTO_MapsListNameToDTOName()
+        {
+            var mapper = CreateMapper();
+            const string NAME = "1";
+
+            var list = new List
+            {
+                Name = NAME
+            };
+
+            var dto = mapper.Map<ListNameAndIdDTO>(list);
+
+            Assert.AreEqual(NAME, dto.Name);
         }
     }
 }
