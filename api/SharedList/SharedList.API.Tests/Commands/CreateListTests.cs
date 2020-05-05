@@ -257,9 +257,10 @@ namespace SharedList.API.Tests.Commands
         }
 
         [TestMethod]
-        public async Task AddsNewListToDBWithNoUpdated()
+        public async Task AddsNewListToDBWithUpdatedNow()
         {
-            var (context, nowProvider, randomisedWordsProvider) = CreateDeps();
+            var EXPECTED_DATE = new DateTime(2020, 2, 1);
+            var (context, nowProvider, randomisedWordsProvider) = CreateDeps(EXPECTED_DATE);
 
             using (context)
             {
@@ -269,7 +270,7 @@ namespace SharedList.API.Tests.Commands
                 var handler = new CreateListHandler(context, nowProvider, randomisedWordsProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 
-                Assert.IsNull(context.Lists.First().Updated);
+                Assert.AreEqual(EXPECTED_DATE, context.Lists.First().Updated);
             }
         }
     }

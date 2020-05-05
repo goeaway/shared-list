@@ -25,10 +25,10 @@ namespace SharedList.API.Presentation.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("getNames")]
-        public Task<IEnumerable<ListNameAndIdDTO>> GetNames(string[] ids)
+        [HttpGet("getnames")]
+        public Task<IEnumerable<ListNameAndIdDTO>> GetNames(string ids)
         {
-            return _mediator.Send(new GetListNamesRequest(ids));
+            return _mediator.Send(new GetListNamesRequest(ids.Split(",")));
         }
 
         [HttpGet("get/{id}")]

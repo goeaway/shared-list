@@ -74,3 +74,18 @@ export const SuccessButton = styled(Button)`
         background: ${p => p.theme.success4};
     }
 `
+
+export const InvertedAccentButton = styled(Button)`
+    color: ${p => p.theme.accent4};
+    background: transparent;
+    transition: color 300ms ease;
+    box-shadow: none;
+
+    &:hover {
+        color: ${p => p.theme.accent5}; 
+    }
+
+    &:disabled {
+        color: ${p => p.theme.accent1};
+    }
+`

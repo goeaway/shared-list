@@ -31,6 +31,14 @@ const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
     const space = useKeyPress(" ");
 
     useEffect(() => {
+        setListName(list.name);
+    }, [list.name]);
+
+    useEffect(() => {
+        setItems(list.items);
+    }, [list.items]);
+
+    useEffect(() => {
         if(!stopListKeyboardControls) {
             setInputFocus(true);
         }

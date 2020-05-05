@@ -1,11 +1,12 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, useLayoutEffect } from "react";
 import { useParams, useHistory } from "react-router";
 import styled from "styled-components";
 import List from "../list";
 import { ListDTO, NameAndId } from "../../types";
 import { createNewList } from "../../utils/create-new-list";
 import { useToasts } from "react-toast-notifications";
-
+import { addListIfNew, getLists } from "../../utils/storage";
+import ListMenu from "../list-menu";
 
 
 const ListPage : FC = ({}) => {
@@ -24,6 +25,7 @@ const ListPage : FC = ({}) => {
                     if(response.ok) {
                         response.json().then((data: ListDTO) => {
                             setList(data);
+                            addListIfNew(data.id);
                         });
                     } else {
                         addToast(<span>Couldn't find your list. A new one has been created</span>, {
@@ -58,9 +60,10 @@ const ListPage : FC = ({}) => {
         }
     }, [id]);
 
-    useEffect(() => {
-        if(otherLists) {
-            fetch("https://localhost:44327/list/getnames")
+    useLayoutEffect(() => {
+        const fromStorage = getLists();
+        if(fromStorage.length) {
+            fetch(`https://localhost:44327/list/getnames?ids=${fromStorage.join()}`)
             .then(response => {
                 if(response.ok) {
                     response.json().then((json: Array<NameAndId<string>>) => {
@@ -74,7 +77,7 @@ const ListPage : FC = ({}) => {
 
             });
         }
-    }, [otherLists]);
+    }, [id]);
 
     const onListChangeHandler = async (newList: ListDTO) => {
         // if we have an id just update, otherwise create
@@ -109,44 +112,35 @@ const ListPage : FC = ({}) => {
     }
 
     return (
-        <AppContainer>
-            <ListMenu>
-                {otherLists.map(l => 
-                    <ListMenuItem>
-                        <span>{l.name}</span>
-                    </ListMenuItem>)}
-            </ListMenu>
+        <PageContainer>
+            <ListMenu lists={otherLists.filter(o => o.id !== id)} />
             <ContentContainer>
                 {!ready && <LoadingContainer>Loading...</LoadingContainer>}
                 {ready && list && <ListContainer><List list={list} canCopy={!!id} onChange={onListChangeHandler} /> </ListContainer>}
             </ContentContainer>
-        </AppContainer>
+        </PageContainer>
     );
 }
 
 export default ListPage;
 
-const AppContainer = styled.div`
+const PageContainer = styled.div`
     height: 100vh;
     width: 100vw;
+    display:flex;
+    position: relative;
 `
-
-const ListMenu = styled.div`
-
-`
-
-const ListMenuItem = styled.div``
 
 const ContentContainer = styled.div`
     display:flex;
     justify-content: center;
     overflow-x: hidden;
-
+    flex: 1 1 auto;
+    padding: 5rem 1rem;
 `
 
 const ListContainer = styled.div`
     width: 100%;
-    margin: 5rem 2rem;
     transition: width .3s ease;
 
     @media(min-width: 800px) {

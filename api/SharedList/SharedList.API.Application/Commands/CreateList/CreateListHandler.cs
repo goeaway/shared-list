@@ -31,6 +31,7 @@ namespace SharedList.API.Application.Commands.CreateList
                 Id = _randomisedWordProvider.CreateWordsString(),
                 Name = request.DTO.Name?.Trim(),
                 Created = _nowProvider.Now,
+                Updated = _nowProvider.Now,
                 Items = request.DTO.Items?.Select((i, index) => new ListItem
                 {
                     Id = i.Id.Trim(),

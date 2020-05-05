@@ -30,6 +30,7 @@ namespace SharedList.API.Application.Queries.GetListName
             return _context
                 .Lists
                 .Where(l => request.Ids.Contains(l.Id))
+                .OrderByDescending(l => l.Updated)
                 .Select(l => _mapper.Map<ListNameAndIdDTO>(l));
         }
     }

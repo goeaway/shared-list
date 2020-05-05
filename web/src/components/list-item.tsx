@@ -193,9 +193,31 @@ interface StyledSpanProps {
 }
 
 const StyledSpan = styled.span`
-    text-decoration: ${(p: StyledSpanProps) => p.complete && "line-through"};
     margin-left: .5rem;
     flex: 1 1 auto;
     padding: .25rem;
     border: 2px solid transparent;
+    position: relative;
+
+    ${(p: StyledSpanProps) => p.complete && css`
+        &::after {
+            content: ' ';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: ${p => p.theme.fontLight5};
+            animation-name: strike;
+            animation-duration: 100ms;
+            animation-timing-function: linear;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards; 
+        }
+    `}
+
+    @keyframes strike{
+        0%   { width : 0; }
+        100% { width: 100%; }
+    }
 `
