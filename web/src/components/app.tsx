@@ -1,25 +1,31 @@
-import React, { FC, useRef } from "react";
+import React, { FC } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import ListPage from "./pages/list-page";
 import Light from "../themes/light";
 import { ToastProvider } from "react-toast-notifications";
 import ConnectivityToaster from "./utils/connectivity-toaster";
+import AuthContext from "../context/auth";
+import AuthRoute from "./routes/auth-route";
+import LoginPage from "./pages/login-page";
+import HomePage from "./pages/home-page";
 
 const App : FC = () => {
     return (
         <ThemeProvider theme={Light}>
             <ToastProvider>
-                <ConnectivityToaster />
-                <Router>
-                    <AppContainer>
-                        <Switch>
-                            <Route path="/:id?">
-                                <ListPage />
-                            </Route>
-                        </Switch>
-                    </AppContainer>
-                </Router>
+                <AuthContext.Provider value={false}>
+                    <ConnectivityToaster />
+                    <Router>
+                        <AppContainer>
+                            <Switch>
+                                <AuthRoute path="/list/:id?" component={ListPage} />
+                                <Route exact path="/" component={HomePage} />
+                                <Route path="/login" component={LoginPage} />
+                            </Switch>
+                        </AppContainer>
+                    </Router>
+                </AuthContext.Provider>
             </ToastProvider>
         </ThemeProvider>
     );

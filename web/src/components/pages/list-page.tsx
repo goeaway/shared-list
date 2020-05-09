@@ -97,7 +97,7 @@ const ListPage : FC = ({}) => {
 
             if(result.ok) {
                 const newId = await result.text();
-                replace(newId);
+                replace(`/list/${newId}`);
             }
         }
     }
