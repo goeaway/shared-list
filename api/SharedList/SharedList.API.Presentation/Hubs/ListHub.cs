@@ -18,10 +18,20 @@ namespace SharedList.API.Presentation.Hubs
             _mediator = mediator;
         }
 
+        public Task JoinList(string listId)
+        {
+            return Groups.AddToGroupAsync(Context.ConnectionId, listId);
+        }
+
+        public Task LeaveList(string listId)
+        {
+            return Groups.RemoveFromGroupAsync(Context.ConnectionId, listId);
+        }
+
         public async Task UpdateList(ListDTO dto)
         {
             await _mediator.Send(new UpdateListRequest(dto));
-            await Clients.All.SendCoreAsync("UpdateList", new [] { dto });
+            await Clients.Group(dto.Id).SendCoreAsync("UpdateList", new[] {dto});
         }
     }
 }

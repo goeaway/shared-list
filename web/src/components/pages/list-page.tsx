@@ -13,7 +13,6 @@ const ListPage : FC = ({}) => {
     const [ready, setReady] = useState(false);
     const [list, setList] = useState<ListDTO>();
     const [connection, setConnection] = useState<HubConnection>(null);
-    // const [otherLists, setOtherLists] = useState<Array<NameAndId<string>>>([]);
     const { addToast } = useToasts();
 
     useEffect(() => {
@@ -24,6 +23,7 @@ const ListPage : FC = ({}) => {
                 });
 
                 await connection.start();
+                await connection.invoke("joinlist", id);
             }
 
             startConnection();
@@ -104,7 +104,6 @@ const ListPage : FC = ({}) => {
 
     return (
         <PageContainer>
-            {/* <ListMenu lists={otherLists.filter(o => o.id !== id)} /> */}
             <ContentContainer>
                 {!ready && <LoadingContainer>Loading...</LoadingContainer>}
                 {ready && list && <ListContainer><List list={list} canCopy={!!id} onChange={onListChangeHandler} /> </ListContainer>}
