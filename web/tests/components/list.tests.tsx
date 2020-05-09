@@ -108,16 +108,6 @@ describe("Tests the list component", () => {
         expect(screen.getAllByRole("list-item").length).toBe(1);
     });
 
-    it("should delete an item from the list", () => {
-        renderList(dto);
-        // open the context menu
-        fireEvent.click(screen.getByRole("list-item-value"), { button: 2 });
-        // click the delete option
-        fireEvent.click(screen.getByText("Delete"));
-
-        expect(screen.queryAllByRole("list-item").length).toBe(0);
-    });
-
     it("should change hide completed text to show completed when hide complete button is clicked", () => {
         renderList(dto);
         fireEvent.click(screen.getByText("Hide Completed"));
@@ -147,13 +137,9 @@ describe("Tests the list component", () => {
     it("should copy the current location href to the clipboard on copy url button click", async () => {
         renderList(dto);
         const writeStub = sandbox.stub(navigator.clipboard, "writeText");
-        fireEvent.click(screen.getByText("Copy List URL"));
+        fireEvent.click(screen.getByText("Share List"));
         expect(writeStub.calledOnce).toBe(true);
         expect(writeStub.firstCall.args[0]).toBe("http://localhost")
-    });
-
-    it("should show a toast when the copy url button is clicked", () => {
-        fail();
     });
 
     it("should set all completed items as incomplete", () => {

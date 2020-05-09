@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
 import React from "react";
 import ListItem from "../../src/components/list-item";
 import { ListItemDTO } from "../../src/types";
@@ -66,7 +66,7 @@ describe("Tests the list item component", () => {
         fireEvent.click(screen.getByRole("list-item-check"));
         expect(onItemEdited.calledOnce).toBe(true);
         expect(onItemEdited.firstCall.args[0]).toBe(testDTO.id);
-        expect(onItemEdited.firstCall.args[1]).toStrictEqual({ complete: true, notes: "testnotes", value: "testvalue", id: "something"});
+        expect(onItemEdited.firstCall.args[1]).toStrictEqual({ completed: true, notes: "testnotes", value: "testvalue", id: "something"});
     });
 
     it("should show a context menu when the list item container is right clicked", () => {
@@ -77,14 +77,14 @@ describe("Tests the list item component", () => {
 
     it("should hide span after a double click on span", () => {
         renderDraggableListItem(dto);
-        fireEvent.doubleClick(screen.getByRole("list-item-value"));
+        fireEvent.click(screen.getByRole("list-item-value"));
 
         expect(screen.queryByRole("list-item-value")).toBeNull();
     });
 
     it("should show input after a double click on span", () => {
         renderDraggableListItem(dto);
-        fireEvent.doubleClick(screen.getByRole("list-item-value"));
+        fireEvent.click(screen.getByRole("list-item-value"));
 
         expect(screen.getByRole("list-item-input")).not.toBeUndefined();
     });
@@ -93,7 +93,7 @@ describe("Tests the list item component", () => {
         const EXPECTED_VALUE = "test value";
         dto.value = EXPECTED_VALUE;
         renderDraggableListItem(dto);
-        fireEvent.doubleClick(screen.getByRole("list-item-value"));
+        fireEvent.click(screen.getByRole("list-item-value"));
 
         const input = screen.getByRole("list-item-input") as HTMLInputElement;
         expect(input.value).toBe(EXPECTED_VALUE);
@@ -101,47 +101,21 @@ describe("Tests the list item component", () => {
 
     it("should focus the input when editing", () => {
         renderDraggableListItem(dto);
-        fireEvent.doubleClick(screen.getByRole("list-item-value"));
+        fireEvent.click(screen.getByRole("list-item-value"));
         expect(document.activeElement).toBe(screen.getByRole("list-item-input"));
     });
     
-    it("should hide checkbox when editing", () => {
+    it("should not hide checkbox when editing", () => {
         renderDraggableListItem(dto);
-        fireEvent.doubleClick(screen.getByRole("list-item-value"));
-        expect(screen.queryByRole("list-item-check")).toBeNull();
+        fireEvent.click(screen.getByRole("list-item-value"));
+        expect(screen.getByRole("list-item-check")).not.toBeUndefined();
     });
 
     it("should call the onEditingChanged callback when starting to edit", () => {
         renderDraggableListItem(dto);
-        fireEvent.doubleClick(screen.getByRole("list-item-value"));
+        fireEvent.click(screen.getByRole("list-item-value"));
         expect(onEditingChanged.calledTwice).toBe(true);
         expect(onEditingChanged.secondCall.args[0]).toBe(true);
-    });
-
-    it("should call the onValueChanged callback when the confirm button is clicked", () => {
-        renderDraggableListItem(dto);
-        fireEvent.doubleClick(screen.getByRole("list-item-value"));
-        fireEvent.change(screen.getByRole("list-item-input"), { target: { value: "item changed" }});
-        fireEvent.click(screen.getByRole("list-item-confirm"));
-
-        expect(onItemEdited.calledOnce).toBe(true);
-    });
-
-    it("should not call the onValueChanged callback when the confirm button is clicked but the value is empty", () => {
-        renderDraggableListItem(dto);
-        fireEvent.doubleClick(screen.getByRole("list-item-value"));
-        fireEvent.change(screen.getByRole("list-item-input"), { target: { value: "" }});
-        fireEvent.click(screen.getByRole("list-item-confirm"));
-
-        expect(onItemEdited.called).toBe(false);
-    });
-
-    it("should call the onDelete callback when the delete button in the context menu is pressed", () => {
-        renderDraggableListItem(dto);
-        fireEvent.click(screen.getByRole("list-item-value"), { button: 2 });
-        fireEvent.click(screen.getByText("Delete"));
-
-        expect(onDelete.calledOnce).toBe(true);
     });
 
     it("should display none if hide prop is true and the list item is complete", () => {

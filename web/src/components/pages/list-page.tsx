@@ -1,21 +1,34 @@
-import React, { FC, useState, useEffect, useLayoutEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router";
 import styled from "styled-components";
 import List from "../list";
-import { ListDTO, NameAndId } from "../../types";
+import { ListDTO } from "../../types";
 import { createNewList } from "../../utils/create-new-list";
 import { useToasts } from "react-toast-notifications";
-import { addListIfNew, getLists } from "../../utils/storage";
-import ListMenu from "../list-menu";
-
+import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
 
 const ListPage : FC = ({}) => {
     const { id } = useParams();
     const { replace } = useHistory();
     const [ready, setReady] = useState(false);
     const [list, setList] = useState<ListDTO>();
-    const [otherLists, setOtherLists] = useState<Array<NameAndId<string>>>([]);
+    const [connection, setConnection] = useState<HubConnection>(null);
+    // const [otherLists, setOtherLists] = useState<Array<NameAndId<string>>>([]);
     const { addToast } = useToasts();
+
+    useEffect(() => {
+        if(connection) {
+            const startConnection = async () => {
+                connection.on("updatelist", (data: ListDTO) => {
+                    setList(data);
+                });
+
+                await connection.start();
+            }
+
+            startConnection();
+        }
+    }, [connection]);
 
     useEffect(() => {
         if(id) {
@@ -25,7 +38,10 @@ const ListPage : FC = ({}) => {
                     if(response.ok) {
                         response.json().then((data: ListDTO) => {
                             setList(data);
-                            addListIfNew(data.id);
+                            // establish connection here
+                            setConnection(new HubConnectionBuilder()
+                                .withUrl("https://localhost:44327/listHub")
+                                .build());
                         });
                     } else {
                         addToast(<span>Couldn't find your list. A new one has been created</span>, {
@@ -60,37 +76,16 @@ const ListPage : FC = ({}) => {
         }
     }, [id]);
 
-    useLayoutEffect(() => {
-        const fromStorage = getLists();
-        if(fromStorage.length) {
-            fetch(`https://localhost:44327/list/getnames?ids=${fromStorage.join()}`)
-            .then(response => {
-                if(response.ok) {
-                    response.json().then((json: Array<NameAndId<string>>) => {
-                        setOtherLists(json);
-                    });
-                } else {
-
-                }
-            })
-            .catch(reason => {
-
-            });
-        }
-    }, [id]);
-
     const onListChangeHandler = async (newList: ListDTO) => {
         // if we have an id just update, otherwise create
         if(newList.id) {
-            const result = await fetch("https://localhost:44327/list/update", {
-                method: "PUT",
-                headers: new Headers({ 'content-type': 'application/json' }),
-                body: JSON.stringify(newList)
-            });
-
-            if(!result.ok) {
-                addToast(<span>Couldn't update list. Your changes might not be synchronised.</span>, {
-                    appearance: 'error'
+            if(connection) {
+                await connection.invoke("updatelist", newList);
+            } else {
+                const result = await fetch("https://localhost:44327/list/update", {
+                    method: "PUT",
+                    headers: new Headers({ 'content-type': 'application/json' }),
+                    body: JSON.stringify(newList)
                 });
             }
         } else {
@@ -100,11 +95,7 @@ const ListPage : FC = ({}) => {
                 body: JSON.stringify(newList)
             });
 
-            if(!result.ok) {
-                addToast(<span>Couldn't save list. Your changes might not be synchronised.</span>, {
-                    appearance: 'error'
-                });
-            } else {
+            if(result.ok) {
                 const newId = await result.text();
                 replace(newId);
             }
@@ -113,7 +104,7 @@ const ListPage : FC = ({}) => {
 
     return (
         <PageContainer>
-            <ListMenu lists={otherLists.filter(o => o.id !== id)} />
+            {/* <ListMenu lists={otherLists.filter(o => o.id !== id)} /> */}
             <ContentContainer>
                 {!ready && <LoadingContainer>Loading...</LoadingContainer>}
                 {ready && list && <ListContainer><List list={list} canCopy={!!id} onChange={onListChangeHandler} /> </ListContainer>}

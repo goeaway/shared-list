@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -13,12 +12,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Serilog;
 using SharedList.API.Application.Exceptions;
 using SharedList.API.Application.Pipeline;
 using SharedList.API.Application.Queries.GetList;
+using SharedList.API.Presentation.Hubs;
 using SharedList.Persistence;
 using SharedList.Persistence.Models.Entities;
 
@@ -67,6 +66,7 @@ namespace SharedList.API.Presentation
             services.AddAutoMapper(typeof(List));
             services.AddMediatR(Assembly.GetAssembly(typeof(ValidationBehaviour<,>)));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,6 +86,10 @@ namespace SharedList.API.Presentation
             app.UseCors(AllowSpecificOriginsCORSPolicy);
             app.UseMvc();
             app.UseAuthentication();
+            app.UseSignalR(cfg =>
+            {
+                cfg.MapHub<ListHub>("/listHub");
+            });
         }
 
         private void ExceptionHandler(IApplicationBuilder app)

@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aspnet/signalr": "^1.1.4",
     "@types/react": "^16.9.34",
     "@types/react-beautiful-dnd": "^12.1.2",
     "@types/react-dom": "^16.9.6",
