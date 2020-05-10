@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SharedList.API.Application.Commands.CreateList;
@@ -15,6 +16,7 @@ using SharedList.Core.Models.DTOs;
 namespace SharedList.API.Presentation.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class ListController : Controller
     {

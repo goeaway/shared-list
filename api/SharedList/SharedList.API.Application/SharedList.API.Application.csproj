@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="FluentValidation" Version="8.6.2" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.45.0" />
     <PackageReference Include="MediatR" Version="8.0.1" />
   </ItemGroup>
 
@@ -14,6 +15,15 @@
     <ProjectReference Include="..\SharedList.Core.Models\SharedList.Core.Models.csproj" />
     <ProjectReference Include="..\SharedList.Core\SharedList.Core.csproj" />
     <ProjectReference Include="..\SharedList.Persistence\SharedList.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.IdentityModel.Tokens">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.identitymodel.tokens\5.2.0\lib\netstandard1.4\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IdentityModel.Tokens.Jwt">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\system.identitymodel.tokens.jwt\5.2.0\lib\netstandard1.4\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

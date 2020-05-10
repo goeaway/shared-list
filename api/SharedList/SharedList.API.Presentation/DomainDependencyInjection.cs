@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using SharedList.Core.Abstractions;
 using SharedList.Core.Implementations;
@@ -32,6 +33,12 @@ namespace SharedList.API.Presentation
                 .WriteTo.RollingFile(path)
                 .CreateLogger();
             collection.AddSingleton<ILogger>(logger);
+            return collection;
+        }
+
+        public static IServiceCollection AddConfiguration(this IServiceCollection collection, IConfiguration configuration)
+        {
+            collection.AddSingleton(configuration);
             return collection;
         }
     }

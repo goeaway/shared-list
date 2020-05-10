@@ -6,6 +6,7 @@ import { ListDTO } from "../../types";
 import { createNewList } from "../../utils/create-new-list";
 import { useToasts } from "react-toast-notifications";
 import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
+import useAuth from "../../hooks/use-auth";
 
 const ListPage : FC = ({}) => {
     const { id } = useParams();
@@ -14,6 +15,7 @@ const ListPage : FC = ({}) => {
     const [list, setList] = useState<ListDTO>();
     const [connection, setConnection] = useState<HubConnection>(null);
     const { addToast } = useToasts();
+    const { authData } = useAuth();
 
     useEffect(() => {
         if(connection) {
@@ -40,7 +42,7 @@ const ListPage : FC = ({}) => {
                             setList(data);
                             // establish connection here
                             setConnection(new HubConnectionBuilder()
-                                .withUrl("https://localhost:44327/listHub")
+                                .withUrl("https://localhost:44327/listHub", { accessTokenFactory: () => authData.jwt })
                                 .build());
                         });
                     } else {
@@ -76,7 +78,7 @@ const ListPage : FC = ({}) => {
         }
     }, [id]);
 
-    const onListChangeHandler = async (newList: ListDTO) => {
+    async function onListChangeHandler (newList: ListDTO) {
         // if we have an id just update, otherwise create
         if(newList.id) {
             if(connection) {
@@ -84,20 +86,33 @@ const ListPage : FC = ({}) => {
             } else {
                 const result = await fetch("https://localhost:44327/list/update", {
                     method: "PUT",
-                    headers: new Headers({ 'content-type': 'application/json' }),
+                    headers: new Headers({ 'content-type': 'application/json', 'Authorization': `Bearer ${authData.jwt}` }),
                     body: JSON.stringify(newList)
                 });
             }
         } else {
-            const result = await fetch("https://localhost:44327/list/create", {
-                method: "POST",
-                headers: new Headers({ 'content-type': 'application/json' }),
-                body: JSON.stringify(newList)
-            });
+            const handleCreateError = () => {
+                addToast(<span>Couldn't save your list.</span>, {
+                    appearance: "error",
+                    autoDismiss: false
+                });
+            }
 
-            if(result.ok) {
-                const newId = await result.text();
-                replace(`/list/${newId}`);
+            try {
+                const result = await fetch("https://localhost:44327/list/create", {
+                    method: "POST",
+                    headers: new Headers({ 'content-type': 'application/json', 'Authorization': `Bearer ${authData.jwt}` }),
+                    body: JSON.stringify(newList)
+                });
+    
+                if(result.ok) {
+                    const newId = await result.text();
+                    replace(`/list/${newId}`);
+                } else {
+                    handleCreateError();
+                }
+            } catch {
+                handleCreateError();
             }
         }
     }

@@ -15,3 +15,9 @@ export interface NameAndId<TId> {
     name: string;
     id: TId;
 }
+
+export interface AuthenticationResponse {
+    jwt: string;
+    email: string;
+    name: string;
+}

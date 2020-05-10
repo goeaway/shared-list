@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using SharedList.API.Application.Commands.UpdateList;
 using SharedList.Core.Models.DTOs;
 
 namespace SharedList.API.Presentation.Hubs
 {
+    [Authorize]
     public class ListHub : Hub
     {
         private readonly IMediator _mediator;
