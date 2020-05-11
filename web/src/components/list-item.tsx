@@ -136,14 +136,14 @@ const OuterContainer = styled.div`
         opacity: 1;
         position: relative;
         top: 0;
-        right: 0;
+        left: 0;
     }
 
     .show-list-item-exit-active {
         opacity: 0;
-        right: -100px;
+        left: -100px;
         position: relative;
-        transition: opacity 300ms, right 300ms;
+        transition: opacity 300ms, left 300ms;
     }
 `
 

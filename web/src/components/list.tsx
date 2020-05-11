@@ -15,11 +15,12 @@ import { useToasts } from "react-toast-notifications";
 
 export interface ListProps {
     list: ListDTO;
-    canCopy: boolean;
+    showCopy?: boolean;
+    canCopy?: boolean;
     onChange?: (newList: ListDTO) => void;
 }
 
-const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
+const List : FC<ListProps> = ({ list, showCopy, canCopy, onChange }) => {
     const [items, setItems] = useState(list.items);
     const [stopListKeyboardControls, setStopListKeyboardControls] = useState(false);
     const [inputFocus, setInputFocus] = useState(true);
@@ -45,13 +46,13 @@ const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
     }, [space]);
 
     useEffect(() => {
-        if(items !== list.items) {
+        if(items !== list.items && onChange) {
             onChange({ id: list.id, name: listName, items });
         }
     }, [items]);
 
     useEffect(() => {
-        if(listName !== list.name) {
+        if(listName !== list.name && onChange) {
             onChange({ id: list.id, name: listName, items });
         }
     }, [listName]);
@@ -138,16 +139,22 @@ const List : FC<ListProps> = ({ list, canCopy, onChange }) => {
 
     return (
         <StyledContainer role="list">
+            {showCopy && 
             <ControlBar role="list-control-bar">
                 <ControlBarInner>
-                    <AccentButton hideTextXS disabled={!canCopy} role="copy-url" onClick={onCopyURLClickHandler}><FaShareAlt /><span>&nbsp;Share List</span></AccentButton>
-                </ControlBarInner>
-                <ControlBarInner>
-                    <DefaultButton hideTextXS role="reset-completed" onClick={onUnCompleteAllClickHandler}><FaUndoAlt /><span>&nbsp;Uncomplete All</span></DefaultButton>
-                    <DefaultButton hideTextXS role="hide-completed" onClick={onToggleHideCompleteHandler}>{hideCompleted ? <><FaEye /><span>&nbsp;Show Completed</span></> : <><FaEyeSlash /><span>&nbsp;Hide Completed</span></>}</DefaultButton>
+                        <AccentButton hideTextXS disabled={!canCopy} role="copy-url" onClick={onCopyURLClickHandler}><FaShareAlt /><span>&nbsp;Share List</span></AccentButton>
                 </ControlBarInner>
             </ControlBar>
-            <ListName name={listName} onChange={listNameOnChangedHandler} onEditChanged={itemEditingChangedHandler} />
+            }
+            <ControlBar>
+                <ControlBarInner>
+                    <ListName name={listName} onChange={listNameOnChangedHandler} onEditChanged={itemEditingChangedHandler} />
+                </ControlBarInner>
+                <ControlBarInner>
+                    <DefaultButton role="reset-completed" onClick={onUnCompleteAllClickHandler}><FaUndoAlt /></DefaultButton>
+                    <DefaultButton role="hide-completed" onClick={onToggleHideCompleteHandler}>{hideCompleted ? <FaEye /> : <FaEyeSlash />}</DefaultButton>
+                </ControlBarInner>
+            </ControlBar>
             <ListInput onAdd={inputOnAddHandler} onLoseFocus={inputRequestLoseFocusHandler} onRequestFocus={inputRequestFocusHandler} focus={inputFocus} clickOutsideRef={outsideInputClickRef} />
             <ItemContainer role="list-items-container">
                 {items.length === 0 && <ListEmpty />}

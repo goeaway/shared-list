@@ -34,6 +34,7 @@ namespace SharedList.API.Application.Commands.Authenticate
 
                 var handler = new JwtSecurityTokenHandler();
                 var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]));
+                var expiry = _nowProvider.Now.AddDays(7);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
@@ -41,7 +42,7 @@ namespace SharedList.API.Application.Commands.Authenticate
                         new Claim(ClaimTypes.Name, result.Name),
                         new Claim(ClaimTypes.Email, result.Email), 
                     }),
-                    Expires = _nowProvider.Now.AddDays(7),
+                    Expires = expiry,
                     SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
                 };
 
@@ -51,7 +52,9 @@ namespace SharedList.API.Application.Commands.Authenticate
                 {
                     JWT = handler.WriteToken(token),
                     Email = result.Email,
-                    Name = result.Name
+                    Name = result.Name, 
+                    Image = result.Picture,
+                    Expires = TimeSpan.FromTicks(expiry.Ticks).TotalMilliseconds
                 };
             }
             catch (InvalidJwtException e)

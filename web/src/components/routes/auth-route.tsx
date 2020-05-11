@@ -7,15 +7,15 @@ export interface AuthRouteProps extends RouteProps {
 }
 
 const AuthRoute : FC<AuthRouteProps> = ({ component: Component, ...rest}) => {
-    const { isAuthed } = useAuth();
+    const { authData, isAuthed } = useAuth();
 
     return (
         <Route {...rest} render={(props) => 
-            isAuthed ?
+            isAuthed(authData) ?
             (
                 <Component {...props} />
             ) : (
-                <Redirect to={{ pathname: "/login", state: { referrer: props.location }}} />
+                <Redirect to={{ pathname: "/", state: { referrer: props.location }}} />
             )}/>
     )
 }

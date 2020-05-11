@@ -121,9 +121,9 @@ namespace SharedList.API.Presentation
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseCors(AllowSpecificOriginsCORSPolicy);
             app.UseMvc();
-            app.UseAuthentication();
             app.UseSignalR(cfg =>
             {
                 cfg.MapHub<ListHub>("/listHub");

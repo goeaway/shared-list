@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useCallback } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ListPage from "./pages/list-page";
@@ -7,38 +7,31 @@ import { ToastProvider } from "react-toast-notifications";
 import ConnectivityToaster from "./utils/connectivity-toaster";
 import AuthContext, { AuthenticationData } from "../context/auth";
 import AuthRoute from "./routes/auth-route";
-import LoginPage from "./pages/login-page";
 import HomePage from "./pages/home-page";
+import { storeAuthData, getAuthData } from "../utils/storage";
+import { isAuthenticated } from "../utils/authentication";
+import UserMenu from "./user-menu";
 
 const App : FC = () => {
-    const [authData, setAuthData] = useState(JSON.parse(localStorage.getItem("authData")) as AuthenticationData);
-    const isAuthed = authData && !!authData.jwt;
-
+    const [authData, setAuthData] = useState(getAuthData);
+    const isAuthed = useCallback(() => isAuthenticated(authData), [authData]);
     const setTokensMiddleware = (authData: AuthenticationData) => {
-        localStorage.setItem("authData", JSON.stringify(authData));
+        storeAuthData(authData);
         setAuthData(authData);
     }
     
-    const logout = () => {
-        localStorage.removeItem("authData");
-        setAuthData(undefined);
-    }
-
     return (
         <ThemeProvider theme={Light}>
             <ToastProvider>
                 <AuthContext.Provider value={{ authData, isAuthed, setAuthentication: setTokensMiddleware }}>
-                    {
-                        isAuthed && <button type="button" onClick={logout}>Logout</button>
-                    }
                     <ConnectivityToaster />
                     <Router>
                         <AppContainer>
                             <Switch>
                                 <AuthRoute path="/list/:id?" component={ListPage} />
-                                <Route exact path="/" component={HomePage} />
-                                <Route path="/login" component={props => <LoginPage {...props} />} />
+                                <Route exact path="/" component={props => <HomePage {...props} />} />
                             </Switch>
+                            {isAuthed() && <UserMenu />}
                         </AppContainer>
                     </Router>
                 </AuthContext.Provider>
@@ -56,8 +49,5 @@ const AppContainer = styled.div`
     overflow-x: hidden;
     color: ${p => p.theme.fontLight5};
     background: ${p => p.theme.background1};
-
-    > * {
-        flex: 1 1 auto;
-    }
+    position: relative;
 `

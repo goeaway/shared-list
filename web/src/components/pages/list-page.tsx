@@ -15,7 +15,7 @@ const ListPage : FC = ({}) => {
     const [list, setList] = useState<ListDTO>();
     const [connection, setConnection] = useState<HubConnection>(null);
     const { addToast } = useToasts();
-    const { authData } = useAuth();
+    const { authData, setAuthentication } = useAuth();
 
     useEffect(() => {
         if(connection) {
@@ -35,43 +35,51 @@ const ListPage : FC = ({}) => {
     useEffect(() => {
         if(id) {
             const timerStart = performance.now();
-            fetch(`https://localhost:44327/list/get/${id}`)
-                .then(response => {
-                    if(response.ok) {
-                        response.json().then((data: ListDTO) => {
-                            setList(data);
-                            // establish connection here
-                            setConnection(new HubConnectionBuilder()
-                                .withUrl("https://localhost:44327/listHub", { accessTokenFactory: () => authData.jwt })
-                                .build());
-                        });
-                    } else {
-                        addToast(<span>Couldn't find your list. A new one has been created</span>, {
-                            appearance: 'error',
-                            autoDismiss: true
-                        });
-                        setList(createNewList());
+            fetch(`https://localhost:44327/list/get/${id}`, {
+                method: "GET",
+                headers: { 
+                    'Authorization': `Bearer ${authData.jwt}` 
+                },
+            })
+            .then(response => {
+                if(response.ok) {
+                    response.json().then((data: ListDTO) => {
+                        setList(data);
+                        // establish connection here
+                        setConnection(new HubConnectionBuilder()
+                            .withUrl("https://localhost:44327/listHub", { accessTokenFactory: () => authData.jwt })
+                            .build());
+                    });
+                } else {
+                    if(response.status === 401) {
+                        setAuthentication(undefined);
                     }
-                })
-                .catch(reason => {
                     addToast(<span>Couldn't find your list. A new one has been created</span>, {
                         appearance: 'error',
                         autoDismiss: true
                     });
                     setList(createNewList());
-                })
-                .finally(() => {
-                    // avoid jumps by forcing us to wait for at least 400 milliseconds
-                    const timerStop = performance.now();
-                    const waitTime = 400 - (timerStop - timerStart);
-                    if(waitTime > 0) {
-                        setTimeout(() => {
-                            setReady(true);
-                        }, waitTime);
-                    } else {
-                        setReady(true);
-                    }
+                }
+            })
+            .catch(reason => {
+                addToast(<span>Couldn't find your list. A new one has been created</span>, {
+                    appearance: 'error',
+                    autoDismiss: true
                 });
+                setList(createNewList());
+            })
+            .finally(() => {
+                // avoid jumps by forcing us to wait for at least 400 milliseconds
+                const timerStop = performance.now();
+                const waitTime = 400 - (timerStop - timerStart);
+                if(waitTime > 0) {
+                    setTimeout(() => {
+                        setReady(true);
+                    }, waitTime);
+                } else {
+                    setReady(true);
+                }
+            });
         } else {
             setReady(true);
             setList(createNewList());
@@ -86,7 +94,7 @@ const ListPage : FC = ({}) => {
             } else {
                 const result = await fetch("https://localhost:44327/list/update", {
                     method: "PUT",
-                    headers: new Headers({ 'content-type': 'application/json', 'Authorization': `Bearer ${authData.jwt}` }),
+                    headers: { 'content-type': 'application/json', 'Authorization': `Bearer ${authData.jwt}` },
                     body: JSON.stringify(newList)
                 });
             }
@@ -101,7 +109,10 @@ const ListPage : FC = ({}) => {
             try {
                 const result = await fetch("https://localhost:44327/list/create", {
                     method: "POST",
-                    headers: new Headers({ 'content-type': 'application/json', 'Authorization': `Bearer ${authData.jwt}` }),
+                    headers: { 
+                        'content-type': 'application/json', 
+                        'Authorization': `Bearer ${authData.jwt}` 
+                    },
                     body: JSON.stringify(newList)
                 });
     
@@ -109,6 +120,9 @@ const ListPage : FC = ({}) => {
                     const newId = await result.text();
                     replace(`/list/${newId}`);
                 } else {
+                    if(result.status === 401) {
+                        setAuthentication(undefined);
+                    }
                     handleCreateError();
                 }
             } catch {
@@ -121,7 +135,7 @@ const ListPage : FC = ({}) => {
         <PageContainer>
             <ContentContainer>
                 {!ready && <LoadingContainer>Loading...</LoadingContainer>}
-                {ready && list && <ListContainer><List list={list} canCopy={!!id} onChange={onListChangeHandler} /> </ListContainer>}
+                {ready && list && <ListContainer><List list={list} canCopy={!!id} showCopy onChange={onListChangeHandler} /> </ListContainer>}
             </ContentContainer>
         </PageContainer>
     );

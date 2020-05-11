@@ -1,38 +1,43 @@
+import { AuthenticationData } from "../context/auth";
 
-const KEY = "shared_lists";
+const AUTH_DATA_KEY = "sharedlist_auth";
 
-export function getLists() : Array<string> {
+export const getAuthData = () : AuthenticationData => {
     try {
-        return JSON.parse(localStorage.getItem(KEY)) as Array<string> || [];
-    }
-    catch {
-        return [];
+        const str = localStorage.getItem(AUTH_DATA_KEY);
+        const data = JSON.parse(str) as AuthenticationData;
+
+        // if expiry date is falsy or is older than now
+        // remove the item and return undefined
+        if(!data.expires || data.expires < new Date().getTime()) {
+            clearAuthData();
+            return undefined;
+        }
+
+        return data;
+    } catch {
+        return undefined;
     }
 }
 
-export function addListIfNew(listId: string) {
-    const existing = getLists() || [];
-
-    if(existing.indexOf(listId) > -1) {
-        return;
+export const storeAuthData = (data: AuthenticationData) => {
+    if(!data) {
+        clearAuthData();
     }
 
-    const updated = [...existing, listId];
+    const str = JSON.stringify(data);
 
     try {
-        localStorage.setItem(KEY, JSON.stringify(updated));
+        localStorage.setItem(AUTH_DATA_KEY, str);
     } catch {
-        // ignore
+
     }
 }
 
-export function addList(listId: string) {
-    const existing = getLists() || [];
-    const updated = [...existing, listId];
-
+export const clearAuthData = () => {
     try {
-        localStorage.setItem(KEY, JSON.stringify(updated));
+        localStorage.removeItem(AUTH_DATA_KEY);
     } catch {
-        // ignore
+
     }
 }

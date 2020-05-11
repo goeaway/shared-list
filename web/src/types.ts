@@ -20,4 +20,6 @@ export interface AuthenticationResponse {
     jwt: string;
     email: string;
     name: string;
+    expires: number;
+    image: string;
 }
