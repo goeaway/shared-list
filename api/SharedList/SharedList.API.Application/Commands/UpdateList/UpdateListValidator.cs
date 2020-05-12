@@ -10,7 +10,10 @@ namespace SharedList.API.Application.Commands.UpdateList
     {
         public UpdateListValidator()
         {
+            RuleFor(x => x.UserIdent).NotEmpty().WithMessage("UserIdent must not be empty");
+
             RuleFor(x => x.DTO).NotNull().WithMessage("DTO must not be null");
+
             When(x => x.DTO != null, () =>
             {
                 RuleFor(x => x.DTO.Id).NotEmpty().WithMessage("DTO Id must not be empty");

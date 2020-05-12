@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SharedList.Core.Abstractions;
+using SharedList.Core.Models.Entities;
 using SharedList.Persistence;
 using SharedList.Persistence.Models.Entities;
 
@@ -43,7 +44,14 @@ namespace SharedList.API.Application.Commands.CreateList
                 }).ToList()
             };
 
+            var contribution = new ListContributor
+            {
+                ListId = list.Id,
+                UserIdent = request.UserIdent
+            };
+
             await _context.Lists.AddAsync(list, cancellationToken);
+            await _context.ListContributors.AddAsync(contribution, cancellationToken);
 
             await _context.SaveChangesAsync();
 

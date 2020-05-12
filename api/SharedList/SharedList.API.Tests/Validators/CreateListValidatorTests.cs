@@ -14,9 +14,32 @@ namespace SharedList.API.Tests.Validators
     public class CreateListValidatorTests
     {
         [TestMethod]
+        public void FailsOnNullUserIdent()
+        {
+            var request = new CreateListRequest(null, null);
+            var validator = new CreateListValidator();
+            var failures = validator.ShouldHaveValidationErrorFor(r => r.UserIdent, request);
+
+            Assert.AreEqual(1, failures.Count());
+            Assert.AreEqual("UserIdent must not be empty", failures.First().ErrorMessage);
+        }
+
+        [TestMethod]
+        public void FailsOnEmptyUserIdent()
+        {
+            var request = new CreateListRequest(null, "");
+            var validator = new CreateListValidator();
+            var failures = validator.ShouldHaveValidationErrorFor(r => r.UserIdent, request);
+
+            Assert.AreEqual(1, failures.Count());
+            Assert.AreEqual("UserIdent must not be empty", failures.First().ErrorMessage);
+        }
+
+        [TestMethod]
         public void FailsOnNullDTO()
         {
-            var request = new CreateListRequest(null);
+            const string USER = "user";
+            var request = new CreateListRequest(null, USER);
             var validator = new CreateListValidator();
             var failures = validator.ShouldHaveValidationErrorFor(r => r.DTO, request);
 
@@ -27,7 +50,8 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void FailsOnNullName()
         {
-            var request = new CreateListRequest(new ListDTO());
+            const string USER = "user";
+            var request = new CreateListRequest(new ListDTO(), USER);
             var validator = new CreateListValidator();
             var failures = validator.ShouldHaveValidationErrorFor(r => r.DTO.Name, request);
 
@@ -38,10 +62,11 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void FailsOnEmptyName()
         {
+            const string USER = "user";
             var request = new CreateListRequest(new ListDTO
             {
                 Name = string.Empty
-            });
+            }, USER);
 
             var validator = new CreateListValidator();
             var failures = validator.ShouldHaveValidationErrorFor(r => r.DTO.Name, request);
@@ -53,13 +78,14 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void FailsOnListItemDTONullId()
         {
+            const string USER = "user";
             var request = new CreateListRequest(new ListDTO
             {
                 Items = new List<ListItemDTO>
                 {
                     new ListItemDTO()
                 }
-            });
+            }, USER);
 
             var validator = new CreateListValidator();
             var result = validator.TestValidate(request);
@@ -73,6 +99,7 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void FailsOnListItemDTONullEmpty()
         {
+            const string USER = "user";
             var request = new CreateListRequest(new ListDTO
             {
                 Items = new List<ListItemDTO>
@@ -82,7 +109,7 @@ namespace SharedList.API.Tests.Validators
                         Id = string.Empty
                     }
                 }
-            });
+            }, USER);
 
             var validator = new CreateListValidator();
             var result = validator.TestValidate(request);
@@ -95,18 +122,30 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void PassesOnSetName()
         {
+            const string USER = "user";
             var request = new CreateListRequest(new ListDTO
             {
                 Name = "a"
-            });
+            }, USER);
 
             var validator = new CreateListValidator();
             validator.ShouldNotHaveValidationErrorFor(r => r.DTO.Name, request);
         }
 
         [TestMethod]
+        public void PassesOnSetUserIdent()
+        {
+            const string USER = "user";
+            var request = new CreateListRequest(null, USER);
+
+            var validator = new CreateListValidator();
+            validator.ShouldNotHaveValidationErrorFor(r => r.UserIdent, request);
+        }
+
+        [TestMethod]
         public void PassesOnSetItemId()
         {
+            const string USER = "user";
             var request = new CreateListRequest(new ListDTO
             {
                 Items = new List<ListItemDTO>
@@ -116,7 +155,7 @@ namespace SharedList.API.Tests.Validators
                         Id = "a"
                     }
                 }
-            });
+            }, USER);
 
             var validator = new CreateListValidator();
             var result = validator.TestValidate(request);

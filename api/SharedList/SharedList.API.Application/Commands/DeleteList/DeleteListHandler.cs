@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +24,9 @@ namespace SharedList.API.Application.Commands.DeleteList
 
             if (existing != null)
             {
+                // find all contributors for this list, remove them too
+                var contributors = _context.ListContributors.Where(lc => lc.ListId == existing.Id);
+                _context.ListContributors.RemoveRange(contributors);
                 _context.Lists.Remove(existing);
             }
 

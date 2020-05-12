@@ -10,6 +10,7 @@ namespace SharedList.API.Application.Commands.CreateList
     {
         public CreateListValidator()
         {
+            RuleFor(x => x.UserIdent).NotEmpty().WithMessage("UserIdent must not be empty");
             RuleFor(x => x.DTO)
                 .NotNull()
                 .WithMessage("DTO must not be null");

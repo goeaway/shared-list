@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharedList.API.Application.Commands.DeleteList;
 using SharedList.API.Tests.TestUtilities;
+using SharedList.Core.Models.Entities;
 using SharedList.Persistence.Models.Entities;
 
 namespace SharedList.API.Tests.Commands
@@ -48,6 +49,34 @@ namespace SharedList.API.Tests.Commands
                 var result = await handler.Handle(request, CancellationToken.None);
 
                 Assert.AreEqual(0, context.Lists.Count());
+            }
+        }
+
+        [TestMethod]
+        public async Task RemovesExistingListContributorsForList()
+        {
+            const string ID = "id";
+            const string USER = "user";
+            using (var context = Setup.CreateContext())
+            {
+                context.Lists.Add(new List
+                {
+                    Id = "id"
+                });
+
+                context.ListContributors.Add(new ListContributor
+                {
+                    ListId = ID,
+                    UserIdent = USER
+                });
+
+                context.SaveChanges();
+
+                var request = new DeleteListRequest(ID);
+                var handler = new DeleteListHandler(context);
+                var result = await handler.Handle(request, CancellationToken.None);
+
+                Assert.AreEqual(0, context.ListContributors.Count());
             }
         }
 

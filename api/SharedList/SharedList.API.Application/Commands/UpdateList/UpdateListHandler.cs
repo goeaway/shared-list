@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SharedList.Core.Abstractions;
+using SharedList.Core.Models.Entities;
 using SharedList.Persistence;
 using SharedList.Persistence.Models.Entities;
 
@@ -49,6 +50,20 @@ namespace SharedList.API.Application.Commands.UpdateList
                     Completed = i.Completed,
                     ParentList = existing
                 }).ToList();
+
+                // find all existing contributions
+                // if there is none for this list and user add a new one
+                if (!await _context.ListContributors.AnyAsync(lc =>
+                    lc.ListId == existing.Id && lc.UserIdent == request.UserIdent))
+                {
+                    var newContributor = new ListContributor
+                    {
+                        ListId = existing.Id,
+                        UserIdent = request.UserIdent
+                    };
+
+                    await _context.ListContributors.AddAsync(newContributor);
+                }
 
                 await _context.SaveChangesAsync(cancellationToken);
             }

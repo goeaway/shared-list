@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using MediatR;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharedList.API.Application.Commands.UpdateList;
 using SharedList.API.Tests.TestUtilities;
 using SharedList.Core.Abstractions;
 using SharedList.Core.Models.DTOs;
+using SharedList.Core.Models.Entities;
 using SharedList.Persistence;
 using SharedList.Persistence.Models.Entities;
 
@@ -27,6 +29,7 @@ namespace SharedList.API.Tests.Commands
         [TestMethod]
         public async Task DoesNothingIfNoExistingFoundForId()
         {
+            const string USER = "user";
             const string ID = "id";
             var (context, nowProvider) = CreateDeps();
             using (context)
@@ -35,7 +38,7 @@ namespace SharedList.API.Tests.Commands
                 {
                     Id = ID
                 };
-                var request = new UpdateListRequest(dto);
+                var request = new UpdateListRequest(dto, USER);
                 var handler = new UpdateListHandler(context, nowProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 
@@ -46,6 +49,7 @@ namespace SharedList.API.Tests.Commands
         [TestMethod]
         public async Task UpdatesNameOfExistingListWithDTOName()
         {
+            const string USER = "user";
             const string ID = "id";
             const string OLD_NAME = "old name";
             const string NEW_NAME = "new name";
@@ -67,7 +71,7 @@ namespace SharedList.API.Tests.Commands
                     Name = NEW_NAME
                 };
 
-                var request = new UpdateListRequest(dto);
+                var request = new UpdateListRequest(dto, USER);
                 var handler = new UpdateListHandler(context, nowProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 
@@ -78,6 +82,7 @@ namespace SharedList.API.Tests.Commands
         [TestMethod]
         public async Task UpdatesUpdatedDateOfExistingListWithNow()
         {
+            const string USER = "user";
             const string ID = "id";
             var updatedDate = new DateTime(2020, 1, 1);
             var (context, nowProvider) = CreateDeps(dateTime: updatedDate);
@@ -96,7 +101,7 @@ namespace SharedList.API.Tests.Commands
                     Id = ID,
                 };
 
-                var request = new UpdateListRequest(dto);
+                var request = new UpdateListRequest(dto, USER);
                 var handler = new UpdateListHandler(context, nowProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 
@@ -107,6 +112,7 @@ namespace SharedList.API.Tests.Commands
         [TestMethod]
         public async Task UpdatesListItemValues()
         {
+            const string USER = "user";
             const string ID = "id";
             const string ITEM_ID = "1";
             const string ITEM_VALUES = "value";
@@ -134,7 +140,7 @@ namespace SharedList.API.Tests.Commands
                     }
                 };
 
-                var request = new UpdateListRequest(dto);
+                var request = new UpdateListRequest(dto, USER);
                 var handler = new UpdateListHandler(context, nowProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 
@@ -146,6 +152,7 @@ namespace SharedList.API.Tests.Commands
         [TestMethod]
         public async Task UpdatesListItemNotes()
         {
+            const string USER = "user";
             const string ID = "id";
             const string ITEM_ID = "1";
             const string ITEM_NOTES = "notes";
@@ -173,7 +180,7 @@ namespace SharedList.API.Tests.Commands
                     }
                 };
 
-                var request = new UpdateListRequest(dto);
+                var request = new UpdateListRequest(dto, USER);
                 var handler = new UpdateListHandler(context, nowProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 
@@ -185,6 +192,7 @@ namespace SharedList.API.Tests.Commands
         [TestMethod]
         public async Task UpdatesListItemCompleted()
         {
+            const string USER = "user";
             const string ID = "id";
             const string ITEM_ID = "1";
             const bool COMPLETED = true;
@@ -212,7 +220,7 @@ namespace SharedList.API.Tests.Commands
                     }
                 };
 
-                var request = new UpdateListRequest(dto);
+                var request = new UpdateListRequest(dto, USER);
                 var handler = new UpdateListHandler(context, nowProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 
@@ -224,6 +232,7 @@ namespace SharedList.API.Tests.Commands
         [TestMethod]
         public async Task UpdatesListItemCreated()
         {
+            const string USER = "user";
             const string ID = "id";
             const string ITEM_ID = "1";
             var created = new DateTime(2020, 2, 1);
@@ -250,7 +259,7 @@ namespace SharedList.API.Tests.Commands
                     }
                 };
 
-                var request = new UpdateListRequest(dto);
+                var request = new UpdateListRequest(dto, USER);
                 var handler = new UpdateListHandler(context, nowProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 
@@ -260,8 +269,77 @@ namespace SharedList.API.Tests.Commands
         }
 
         [TestMethod]
+        public async Task AddsListContributorIfNoneExistForListAndUser()
+        {
+            const string USER = "user";
+            const string ID = "id";
+            var (context, nowProvider) = CreateDeps();
+            using (context)
+            {
+                // seed DB
+                context.Lists.Add(new List
+                {
+                    Id = ID
+                });
+
+                context.SaveChanges();
+
+                var dto = new ListDTO
+                {
+                    Id = ID,
+                };
+
+                var request = new UpdateListRequest(dto, USER);
+                var handler = new UpdateListHandler(context, nowProvider);
+                var result = await handler.Handle(request, CancellationToken.None);
+
+                Assert.AreEqual(1, context.ListContributors.Count());
+                Assert.AreEqual(ID, context.ListContributors.First().ListId);
+                Assert.AreEqual(USER, context.ListContributors.First().UserIdent);
+            }
+        }
+
+        [TestMethod]
+        public async Task DoesNotAddListContributorIfOneExistsForListAndUser()
+        {
+            const string USER = "user";
+            const string ID = "id";
+            var (context, nowProvider) = CreateDeps();
+            using (context)
+            {
+                // seed DB
+                context.Lists.Add(new List
+                {
+                    Id = ID
+                });
+
+                context.ListContributors.Add(new ListContributor
+                {
+                    UserIdent = USER,
+                    ListId = ID
+                });
+
+                context.SaveChanges();
+
+                var dto = new ListDTO
+                {
+                    Id = ID,
+                };
+
+                var request = new UpdateListRequest(dto, USER);
+                var handler = new UpdateListHandler(context, nowProvider);
+                var result = await handler.Handle(request, CancellationToken.None);
+
+                Assert.AreEqual(1, context.ListContributors.Count());
+                Assert.AreEqual(ID, context.ListContributors.First().ListId);
+                Assert.AreEqual(USER, context.ListContributors.First().UserIdent);
+            }
+        }
+
+        [TestMethod]
         public async Task RemovesOldListItemsForList()
         {
+            const string USER = "user";
             const string ID = "id";
             const string ITEM_ID = "1";
             var (context, nowProvider) = CreateDeps();
@@ -287,7 +365,7 @@ namespace SharedList.API.Tests.Commands
                     Id = ID
                 };
 
-                var request = new UpdateListRequest(dto);
+                var request = new UpdateListRequest(dto, USER);
                 var handler = new UpdateListHandler(context, nowProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 
@@ -298,6 +376,7 @@ namespace SharedList.API.Tests.Commands
         [TestMethod]
         public async Task DoesNotUpdateCreatedDate()
         {
+            const string USER = "user";
             const string ID = "id";
             var created = new DateTime(2020, 1, 1);
             var (context, nowProvider) = CreateDeps();
@@ -317,7 +396,7 @@ namespace SharedList.API.Tests.Commands
                     Id = ID,
                 };
 
-                var request = new UpdateListRequest(dto);
+                var request = new UpdateListRequest(dto, USER);
                 var handler = new UpdateListHandler(context, nowProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 
@@ -328,6 +407,7 @@ namespace SharedList.API.Tests.Commands
         [TestMethod]
         public async Task ReturnsUnitValue()
         {
+            const string USER = "user";
             const string ID = "id";
             var (context, nowProvider) = CreateDeps();
             using (context)
@@ -337,7 +417,7 @@ namespace SharedList.API.Tests.Commands
                     Id = ID,
                 };
 
-                var request = new UpdateListRequest(dto);
+                var request = new UpdateListRequest(dto, USER);
                 var handler = new UpdateListHandler(context, nowProvider);
                 var result = await handler.Handle(request, CancellationToken.None);
 

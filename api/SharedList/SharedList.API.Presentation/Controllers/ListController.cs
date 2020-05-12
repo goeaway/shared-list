@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedList.API.Application.Commands.CreateList;
 using SharedList.API.Application.Commands.DeleteList;
 using SharedList.API.Application.Commands.UpdateList;
 using SharedList.API.Application.Queries.GetList;
-using SharedList.API.Application.Queries.GetListName;
+using SharedList.API.Application.Queries.GetListsForUser;
+using SharedList.Core.Extensions;
 using SharedList.Core.Models.DTOs;
 
 namespace SharedList.API.Presentation.Controllers
@@ -21,16 +23,18 @@ namespace SharedList.API.Presentation.Controllers
     public class ListController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public ListController(IMediator mediator)
+        public ListController(IMediator mediator, IHttpContextAccessor contextAccessor)
         {
             _mediator = mediator;
+            _contextAccessor = contextAccessor;
         }
 
-        [HttpGet("getnames")]
-        public Task<IEnumerable<ListNameAndIdDTO>> GetNames(string ids)
+        [HttpGet("getuserlists")]
+        public Task<IEnumerable<ListDTO>> GetListsForUser(string userIdent)
         {
-            return _mediator.Send(new GetListNamesRequest(ids.Split(",")));
+            return _mediator.Send(new GetListsForUserRequest(userIdent));
         }
 
         [HttpGet("get/{id}")]
@@ -42,13 +46,15 @@ namespace SharedList.API.Presentation.Controllers
         [HttpPost("create")]
         public Task<string> Create(ListDTO dto)
         {
-            return _mediator.Send(new CreateListRequest(dto));
+            var userIdent = _contextAccessor.GetUserIdent();
+            return _mediator.Send(new CreateListRequest(dto, userIdent));
         }
 
         [HttpPut("update")]
         public Task Update(ListDTO dto)
         {
-            return _mediator.Send(new UpdateListRequest(dto));
+            var userIdent = _contextAccessor.GetUserIdent();
+            return _mediator.Send(new UpdateListRequest(dto, userIdent));
         }
 
         [HttpDelete("delete")]

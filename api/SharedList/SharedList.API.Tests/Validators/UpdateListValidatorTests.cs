@@ -14,9 +14,32 @@ namespace SharedList.API.Tests.Validators
     public class UpdateListValidatorTests
     {
         [TestMethod]
+        public void FailsWhenUserIdentNull()
+        {
+            var request = new UpdateListRequest(null, null);
+            var validator = new UpdateListValidator();
+            var failures = validator.ShouldHaveValidationErrorFor(r => r.UserIdent, request);
+
+            Assert.AreEqual(1, failures.Count());
+            Assert.AreEqual("UserIdent must not be empty", failures.First().ErrorMessage);
+        }
+
+        [TestMethod]
+        public void FailsWhenUserIdentEmpty()
+        {
+            var request = new UpdateListRequest(null, "");
+            var validator = new UpdateListValidator();
+            var failures = validator.ShouldHaveValidationErrorFor(r => r.UserIdent, request);
+
+            Assert.AreEqual(1, failures.Count());
+            Assert.AreEqual("UserIdent must not be empty", failures.First().ErrorMessage);
+        }
+
+        [TestMethod]
         public void FailsWhenDTONull()
         {
-            var request = new UpdateListRequest(null);
+            const string USER = "user";
+            var request = new UpdateListRequest(null, USER);
             var validator = new UpdateListValidator();
             var failures = validator.ShouldHaveValidationErrorFor(r => r.DTO, request);
 
@@ -27,7 +50,8 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void FailsWhenIdNull()
         {
-            var request = new UpdateListRequest(new ListDTO());
+            const string USER = "user";
+            var request = new UpdateListRequest(new ListDTO(), USER);
             var validator = new UpdateListValidator();
             var failures = validator.ShouldHaveValidationErrorFor(r => r.DTO.Id, request);
 
@@ -38,10 +62,11 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void FailsWhenIdEmpty()
         {
+            const string USER = "user";
             var request = new UpdateListRequest(new ListDTO
             {
                 Id = ""
-            });
+            }, USER);
             var validator = new UpdateListValidator();
             var failures = validator.ShouldHaveValidationErrorFor(r => r.DTO.Id, request);
 
@@ -52,13 +77,14 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void FailsOnListItemDTONullId()
         {
+            const string USER = "user";
             var request = new UpdateListRequest(new ListDTO
             {
                 Items = new List<ListItemDTO>
                 {
                     new ListItemDTO()
                 }
-            });
+            }, USER);
 
             var validator = new UpdateListValidator();
             var result = validator.TestValidate(request);
@@ -72,6 +98,7 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void FailsOnListItemDTONullEmpty()
         {
+            const string USER = "user";
             var request = new UpdateListRequest(new ListDTO
             {
                 Items = new List<ListItemDTO>
@@ -81,7 +108,7 @@ namespace SharedList.API.Tests.Validators
                         Id = string.Empty
                     }
                 }
-            });
+            }, USER);
 
             var validator = new UpdateListValidator();
             var result = validator.TestValidate(request);
@@ -94,10 +121,11 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void PassesWhenIdSet()
         {
+            const string USER = "user";
             var request = new UpdateListRequest(new ListDTO
             {
                 Id = "a"
-            });
+            }, USER);
             var validator = new UpdateListValidator();
             validator.ShouldNotHaveValidationErrorFor(r => r.DTO.Id, request);
         }
@@ -105,6 +133,7 @@ namespace SharedList.API.Tests.Validators
         [TestMethod]
         public void PassesOnSetItemId()
         {
+            const string USER = "user";
             var request = new UpdateListRequest(new ListDTO
             {
                 Items = new List<ListItemDTO>
@@ -114,11 +143,21 @@ namespace SharedList.API.Tests.Validators
                         Id = "a"
                     }
                 }
-            });
+            }, USER);
 
             var validator = new UpdateListValidator();
             var result = validator.TestValidate(request);
             result.ShouldNotHaveValidationErrorFor("DTO.Items[0].Id");
+        }
+
+        [TestMethod]
+        public void PassesOnSetUserIdent()
+        {
+            const string USER = "user";
+            var request = new UpdateListRequest(null, USER);
+
+            var validator = new UpdateListValidator();
+            validator.ShouldNotHaveValidationErrorFor(r => r.UserIdent, request);
         }
     }
 }

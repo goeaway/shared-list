@@ -50,7 +50,7 @@ const HomePage : FC<any> = ({ location }) => {
                             <ContentLeft><List list={demoList} /></ContentLeft>
                             <ContentRight>
                                 <Copy>
-                                    Create and Share shopping lists. Get started now, for free, by signing in below.
+                                    Create and collaborate on shopping lists in real time. Get started now by signing in below.
                                 </Copy>
                                 <GoogleLogin 
                                     clientId="787759781218-fa57asnept105qrlmv80tf4877jgkhvk.apps.googleusercontent.com"
