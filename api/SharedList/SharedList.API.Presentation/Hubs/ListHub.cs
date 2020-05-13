@@ -40,7 +40,7 @@ namespace SharedList.API.Presentation.Hubs
             var userIdent = _contextAccessor.GetUserIdent();
 
             await _mediator.Send(new UpdateListRequest(dto, userIdent));
-            await Clients.Group(dto.Id).SendCoreAsync("UpdateList", new object[] {dto, userIdent});
+            await Clients.OthersInGroup(dto.Id).SendAsync("UpdateList", dto, userIdent);
         }
     }
 }

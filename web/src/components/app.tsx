@@ -11,6 +11,8 @@ import HomePage from "./pages/home-page";
 import { storeAuthData, getAuthData } from "../utils/storage";
 import { isAuthenticated } from "../utils/authentication";
 import UserMenu from "./user-menu";
+import { FaHome } from "react-icons/fa";
+import { IconLink } from "./style/links";
 
 const App : FC = () => {
     const [authData, setAuthData] = useState(getAuthData);
@@ -27,6 +29,7 @@ const App : FC = () => {
                     <ConnectivityToaster />
                     <Router>
                         <AppContainer>
+                            {<HomeLink to="/" size={25}><FaHome /></HomeLink>}
                             <Switch>
                                 <AuthRoute path="/list/:id?" component={ListPage} />
                                 <Route exact path="/" component={props => <HomePage {...props} />} />
@@ -50,4 +53,10 @@ const AppContainer = styled.div`
     color: ${p => p.theme.fontLight5};
     background: ${p => p.theme.background1};
     position: relative;
+`
+
+const HomeLink = styled(IconLink)`
+    margin: .5rem;
+    position: absolute;
+    z-index: 1000;
 `

@@ -71,10 +71,6 @@ export default ListName;
 const StyledContainer = styled.div`
     display:flex;
     font-size: 22px;
-
-    input {
-        max-width: 33% !important;
-    }
 `
 
 const NameSpan = styled.span`

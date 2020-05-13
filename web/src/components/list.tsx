@@ -125,6 +125,11 @@ const List : FC<ListProps> = ({ list, showCopy, canCopy, onChange }) => {
     }
 
     const onUnCompleteAllClickHandler = () => {
+        // only do it if 1 or more is completed
+        if(items.every(i => !i.completed)) {
+            return;
+        }
+
         setItems(i => {
             const copy = [...i];
             copy.forEach(c => c.completed = false);

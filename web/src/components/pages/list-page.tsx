@@ -20,8 +20,12 @@ const ListPage : FC = ({}) => {
     useEffect(() => {
         if(connection) {
             const startConnection = async () => {
-                connection.on("updatelist", (data: ListDTO) => {
+                connection.on("updatelist", (data: ListDTO, user: string) => {
                     setList(data);
+                    addToast(<span>{user} updated the list.</span>, {
+                        appearance: "info",
+                        autoDismiss: true
+                    });
                 });
 
                 await connection.start();

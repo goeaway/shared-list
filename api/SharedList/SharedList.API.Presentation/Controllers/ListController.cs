@@ -32,8 +32,9 @@ namespace SharedList.API.Presentation.Controllers
         }
 
         [HttpGet("getuserlists")]
-        public Task<IEnumerable<ListDTO>> GetListsForUser(string userIdent)
+        public Task<IEnumerable<ListDTO>> GetListsForUser()
         {
+            var userIdent = _contextAccessor.GetUserIdent();
             return _mediator.Send(new GetListsForUserRequest(userIdent));
         }
 

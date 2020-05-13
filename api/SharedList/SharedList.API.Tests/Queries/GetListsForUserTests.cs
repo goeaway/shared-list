@@ -78,11 +78,8 @@ namespace SharedList.API.Tests.Queries
                 var result = await handler.Handle(request, CancellationToken.None);
 
                 Assert.AreEqual(2, result.Count());
-                Assert.AreEqual(LIST_ID_1, context.ListContributors.First().ListId);
-                Assert.AreEqual(USER, context.ListContributors.First().UserIdent);
-
-                Assert.AreEqual(LIST_ID_2, context.ListContributors.ToList()[1].ListId);
-                Assert.AreEqual(USER, context.ListContributors.ToList()[1].UserIdent);
+                Assert.AreEqual(LIST_ID_1, result.First().Id);
+                Assert.AreEqual(LIST_ID_2, result.ToList()[1].Id);
             }
         }
     }
