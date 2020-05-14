@@ -12,7 +12,7 @@ const HomePage : FC<any> = ({ location }) => {
     const { authData, isAuthed, setAuthentication } = useAuth();
     const { push } = useHistory();
     const demoList = { id: v1(), name: "demo", items: [] };
-    const [userLists, setUserLists] = useState([]);
+    const [userLists, setUserLists] = useState<Array<ListDTO>>([]);
 
     useEffect(() => {
         if(isAuthed(authData)) {
@@ -37,7 +37,7 @@ const HomePage : FC<any> = ({ location }) => {
         }
     }, []);
 
-    const successHandler = async (response) => {
+    const loginSuccess = async (response) => {
         // make request to API to register this user and get an API auth token
         const result = await fetch(`https://localhost:44327/auth/authenticate?idToken=${response.tokenId}`, {
             method: "POST"
@@ -56,12 +56,30 @@ const HomePage : FC<any> = ({ location }) => {
             });
 
             // redirect to referrer
-            push(location.state.referrer || "/");
+            push(location.state && location.state.referrer || "/");
         }
     }
 
-    const failureHandler = (response) => {
+    const loginFailure = (response) => {
 
+    }
+
+    const onDeleteListHandler = async (id: string) => {
+        const result = await fetch(`https://localhost:44327/list/delete/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${authData.jwt}`
+            }
+        });
+
+        if(result.ok) {
+            setUserLists(lists => {
+                const copy = [...lists];
+                const deleted = copy.findIndex(c => c.id === id);
+                copy.splice(deleted, 1);
+                return copy;
+            });
+        }
     }
 
     return (
@@ -77,8 +95,8 @@ const HomePage : FC<any> = ({ location }) => {
                         </Copy>
                         <GoogleLogin 
                             clientId="787759781218-fa57asnept105qrlmv80tf4877jgkhvk.apps.googleusercontent.com"
-                            onSuccess={successHandler}
-                            onFailure={failureHandler}
+                            onSuccess={loginSuccess}
+                            onFailure={loginFailure}
                             cookiePolicy="single_host_origin"
                         />
                     </ContentRight>
@@ -86,7 +104,7 @@ const HomePage : FC<any> = ({ location }) => {
             }
             { 
                 isAuthed(authData) &&
-                <ListList lists={userLists} />
+                <ListList lists={userLists} onDelete={onDeleteListHandler} />
             }
         </Container>
     );
@@ -156,6 +174,7 @@ const DemoContainer = styled.div`
 const Title = styled.span`
     font-size: 30px;
     line-height: 42px;
+    margin-bottom: 1rem;
 `
 
 const ContentLeft = styled.div`

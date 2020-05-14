@@ -89,3 +89,30 @@ export const InvertedAccentButton = styled(Button)`
         color: ${p => p.theme.accent1};
     }
 `
+
+export interface IconButtonProps {
+    square?: boolean;
+}
+
+export const IconButton = styled.button`
+    color: ${p => p.theme.accent4};
+    background: none;
+    box-shadow: none;
+    transition: all 300ms ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: .5rem;
+    border: none;
+    outline: none;
+    cursor: pointer;
+
+    &:hover {
+        color: ${p => p.theme.accent5};
+        background: ${p => p.theme.background3};
+    }
+
+    ${(p: IconButtonProps) => !p.square && css`
+        border-radius: 50%;
+    `}
+`

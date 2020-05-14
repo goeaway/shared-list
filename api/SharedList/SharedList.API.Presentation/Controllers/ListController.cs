@@ -58,7 +58,7 @@ namespace SharedList.API.Presentation.Controllers
             return _mediator.Send(new UpdateListRequest(dto, userIdent));
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{id}")]
         public Task Delete(string id)
         {
             return _mediator.Send(new DeleteListRequest(id));

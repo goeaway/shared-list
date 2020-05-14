@@ -2,36 +2,40 @@ import React, { FC } from "react";
 import styled from "styled-components";
 import { ListDTO } from "../types";
 import { useHistory } from "react-router";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { AccentButton, IconButton } from "./style/buttons";
+import useAuth from "../hooks/use-auth";
 
 export interface ListListProps {
     lists: Array<ListDTO>;
+    onDelete: (id: string) => void;
 }
 
-const ListList : FC<ListListProps> = ({ lists }) => {
+const ListList : FC<ListListProps> = ({ lists, onDelete }) => {
     const { push } = useHistory();
-
-    const onListPreviewClickHandler = (id: string) => {
-        push(`/list/${id}`);
-    }
-
     const onNewListClickHandler = () => {
         push("/list");
     }
 
     return (
         <Container>
-            <Title>Your Lists</Title>            
             <ControlBar>
-                <NewListButton onClick={onNewListClickHandler}><FaPlus />&nbsp;Add New List</NewListButton>
+                <Title>Your Lists</Title>            
+                <AccentButton onClick={onNewListClickHandler}><FaPlus />&nbsp;Add New List</AccentButton>
             </ControlBar>
             <ListsContainer>
                 {lists.length === 0 && <EmptyState>No Lists Yet.</EmptyState>}
                 {
                     lists.length > 0 && 
                     lists.map(l => 
-                        <ListPreview key={l.id} onClick={() => onListPreviewClickHandler(l.id)}>
-                            {l.name}
+                        <ListPreview key={l.id}>
+                            <ListPreviewLink to={`/list/${l.id}`} >
+                                {l.name}
+                            </ListPreviewLink>
+                            <DeleteButton onClick={() => onDelete(l.id)}>
+                                <FaTrash />
+                            </DeleteButton>
                         </ListPreview>)
                 }
             </ListsContainer>
@@ -46,11 +50,14 @@ const Container = styled.div`
 `
 
 const ControlBar = styled.div`
-
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `
 
 const Title = styled.span`
-
+    font-size: 22px;
+    line-height: 34px;
 `
 
 const EmptyState = styled.div`
@@ -58,13 +65,41 @@ const EmptyState = styled.div`
 `
 
 const ListsContainer = styled.div`
-
+    display: flex;
+    flex-direction: column;
+    padding: .25rem 0;
 `
 
 const ListPreview = styled.div`
+    width: 100%;
+    border: 2px solid ${p => p.theme.gray1};
+    border-radius: 3px;
+    transition: all 300ms ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: ${p => p.theme.fontLight5};
+    margin: .25rem 0;
+    position: relative;
 
+    &:hover {
+        background: ${p => p.theme.background2};
+    }
+`
+    
+const ListPreviewLink = styled(Link)`
+    text-decoration: none;
+    padding: .75rem;
+    color: ${p => p.theme.fontLight5};
+    flex: 1 1 auto;
+
+    &:hover {
+        color: ${p => p.theme.fontDark2};
+    }
 `
 
-const NewListButton = styled.button`
-
+const DeleteButton = styled(IconButton)`
+    padding: .75rem;
+    position: absolute;
+    right: .5rem;
 `
