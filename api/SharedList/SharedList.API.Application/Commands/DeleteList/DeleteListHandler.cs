@@ -27,6 +27,9 @@ namespace SharedList.API.Application.Commands.DeleteList
                 // find all contributors for this list, remove them too
                 var contributors = _context.ListContributors.Where(lc => lc.ListId == existing.Id);
                 _context.ListContributors.RemoveRange(contributors);
+                // find all list items for the list, remove them too
+                var listItems = _context.ListItems.Where(li => li.ParentList.Id == existing.Id);
+                _context.ListItems.RemoveRange(listItems);
                 _context.Lists.Remove(existing);
             }
 

@@ -81,6 +81,36 @@ namespace SharedList.API.Tests.Commands
         }
 
         [TestMethod]
+        public async Task RemovesExistingListItemsForList()
+        {
+            const string ID = "id";
+            const string ITEM_ID = "itemId";
+            const string USER = "user";
+            using (var context = Setup.CreateContext())
+            {
+                var list = new List
+                {
+                    Id = "id"
+                };
+                context.Lists.Add(list);
+
+                context.ListItems.Add(new ListItem
+                {
+                    Id = ITEM_ID,
+                    ParentList = list
+                });
+
+                context.SaveChanges();
+
+                var request = new DeleteListRequest(ID);
+                var handler = new DeleteListHandler(context);
+                var result = await handler.Handle(request, CancellationToken.None);
+
+                Assert.AreEqual(0, context.ListItems.Count());
+            }
+        }
+
+        [TestMethod]
         public async Task ReturnsEmptyUnit()
         {
             using (var context = Setup.CreateContext())
