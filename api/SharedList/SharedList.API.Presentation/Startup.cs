@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -121,14 +122,14 @@ namespace SharedList.API.Presentation
             }
 
             app.UseHttpsRedirection();
-            app.UseAuthentication();
+            app.UseExceptionHandler(ExceptionHandler);
             app.UseCors(AllowSpecificOriginsCORSPolicy);
+            app.UseAuthentication();
             app.UseMvc();
             app.UseSignalR(cfg =>
             {
                 cfg.MapHub<ListHub>("/listHub");
             });
-            app.UseExceptionHandler(ExceptionHandler);
         }
 
         private void ExceptionHandler(IApplicationBuilder app)
