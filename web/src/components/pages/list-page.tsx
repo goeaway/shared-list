@@ -39,6 +39,15 @@ const ListPage : FC = ({}) => {
     useEffect(() => {
         if(id) {
             const timerStart = performance.now();
+            const errorHandler = () => {
+                addToast(<span>Couldn't find your list. A new one has been created</span>, {
+                    appearance: 'error',
+                    autoDismiss: false
+                });
+                setList(createNewList());
+                replace("/list");
+            }
+
             fetch(`https://localhost:44327/list/get/${id}`, {
                 method: "GET",
                 headers: { 
@@ -58,19 +67,11 @@ const ListPage : FC = ({}) => {
                     if(response.status === 401) {
                         setAuthentication(undefined);
                     }
-                    addToast(<span>Couldn't find your list. A new one has been created</span>, {
-                        appearance: 'error',
-                        autoDismiss: true
-                    });
-                    setList(createNewList());
+                    errorHandler();
                 }
             })
             .catch(reason => {
-                addToast(<span>Couldn't find your list. A new one has been created</span>, {
-                    appearance: 'error',
-                    autoDismiss: true
-                });
-                setList(createNewList());
+                errorHandler();
             })
             .finally(() => {
                 // avoid jumps by forcing us to wait for at least 400 milliseconds
@@ -123,6 +124,10 @@ const ListPage : FC = ({}) => {
                 if(result.ok) {
                     const newId = await result.text();
                     replace(`/list/${newId}`);
+                    addToast(<span>Your list has been saved. Share your list to collaborate with others.</span>, {
+                        appearance: "info",
+                        autoDismiss: true
+                    });
                 } else {
                     if(result.status === 401) {
                         setAuthentication(undefined);

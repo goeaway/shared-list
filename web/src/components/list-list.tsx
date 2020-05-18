@@ -6,6 +6,7 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { AccentButton, IconButton } from "./style/buttons";
 import useAuth from "../hooks/use-auth";
+import ListEmpty from "./list-empty";
 
 export interface ListListProps {
     lists: Array<ListDTO>;
@@ -25,7 +26,7 @@ const ListList : FC<ListListProps> = ({ lists, onDelete }) => {
                 <AccentButton onClick={onNewListClickHandler}><FaPlus />&nbsp;Add New List</AccentButton>
             </ControlBar>
             <ListsContainer>
-                {lists.length === 0 && <EmptyState>No Lists Yet.</EmptyState>}
+                {lists.length === 0 && <ListEmpty text="No lists yet..."></ListEmpty>}
                 {
                     lists.length > 0 && 
                     lists.map(l => 

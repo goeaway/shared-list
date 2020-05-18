@@ -29,12 +29,14 @@ const App : FC = () => {
                     <ConnectivityToaster />
                     <Router>
                         <AppContainer>
-                            {<HomeLink to="/" size={25}><FaHome /></HomeLink>}
+                            <ControlBar>
+                                <HomeLink to="/" size={25}><FaHome /></HomeLink>
+                                {isAuthed() && <UserMenu />}
+                            </ControlBar>
                             <Switch>
                                 <AuthRoute path="/list/:id?" component={ListPage} />
                                 <Route exact path="/" component={props => <HomePage {...props} />} />
                             </Switch>
-                            {isAuthed() && <UserMenu />}
                         </AppContainer>
                     </Router>
                 </AuthContext.Provider>
@@ -56,7 +58,18 @@ const AppContainer = styled.div`
 `
 
 const HomeLink = styled(IconLink)`
-    margin: .5rem;
-    position: absolute;
     z-index: 1000;
+    width: 35px;
+    height: 35px;
+    padding: .45rem;
+`
+
+const ControlBar = styled.div`
+    background: transparent;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    z-index: 1000;
+    padding: .75rem;
 `

@@ -54,6 +54,12 @@ const ListName : FC<ListNameProps> = ({ name, onChange, onEditChanged }) => {
         setEditingValue(event.target.value);
     }
 
+    const inputBlurHandler = () => {
+        if(editing) {
+            setEditing(false);
+        }
+    }
+
     const spanClickHandler = () => {
         setEditing(true);
     }
@@ -61,7 +67,7 @@ const ListName : FC<ListNameProps> = ({ name, onChange, onEditChanged }) => {
     return (
         <StyledContainer role="list-name" ref={clickOutsideRef}>
             {!editing && <NameSpan role="list-name-span" onClick={spanClickHandler}>{name}</NameSpan>}
-            {editing && <SubtleInput value={editingValue} role="list-name-input" ref={inputRef} onChange={valueChangedHandler} />}
+            {editing && <SubtleInput value={editingValue} role="list-name-input" ref={inputRef} onChange={valueChangedHandler} onBlur={inputBlurHandler} />}
         </StyledContainer>
     );
 }
