@@ -12,6 +12,7 @@ import { FaShareAlt, FaUndoAlt, FaEye, FaEyeSlash } from "react-icons/fa";
 import styled from "styled-components";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useToasts } from "react-toast-notifications";
+import InfoTooltip from "./tooltips/info-tooltip";
 
 export interface ListProps {
     list: ListDTO;
@@ -156,8 +157,12 @@ const List : FC<ListProps> = ({ list, showCopy, canCopy, onChange }) => {
                     <ListName name={listName} onChange={listNameOnChangedHandler} onEditChanged={itemEditingChangedHandler} />
                 </ControlBarInner>
                 <ControlBarInner>
-                    <DefaultButton role="reset-completed" onClick={onUnCompleteAllClickHandler}><FaUndoAlt /></DefaultButton>
-                    <DefaultButton role="hide-completed" onClick={onToggleHideCompleteHandler}>{hideCompleted ? <FaEye /> : <FaEyeSlash />}</DefaultButton>
+                    <InfoTooltip content={<span>Reset Completed</span>}>
+                        <DefaultButton role="reset-completed" onClick={onUnCompleteAllClickHandler}><FaUndoAlt /></DefaultButton>
+                    </InfoTooltip>
+                    <InfoTooltip content={<span>Hide Completed</span>}>
+                        <DefaultButton role="hide-completed" onClick={onToggleHideCompleteHandler}>{hideCompleted ? <FaEye /> : <FaEyeSlash />}</DefaultButton>
+                    </InfoTooltip>
                 </ControlBarInner>
             </ControlBar>
             <ListInput onAdd={inputOnAddHandler} onLoseFocus={inputRequestLoseFocusHandler} onRequestFocus={inputRequestFocusHandler} focus={inputFocus} clickOutsideRef={outsideInputClickRef} />

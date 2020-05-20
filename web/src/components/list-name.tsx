@@ -21,16 +21,12 @@ const ListName : FC<ListNameProps> = ({ name, onChange, onEditChanged }) => {
     const enter = useKeyPress("Enter");
     const escape = useKeyPress("Escape");
 
-    const confirmHandler = () => {
+    useEffect(() => {
         if(editing) {
             setEditing(false);
             onChange(editingValue || name);
         }
-    }
-
-    const clickOutsideRef = useClickOutside(confirmHandler);
-
-    useEffect(confirmHandler, [enter]);
+    }, [enter]);
 
     useEffect(() => {
         if(editing) {

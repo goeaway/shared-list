@@ -2,7 +2,7 @@ import React, { FC, useState, useLayoutEffect, useEffect, useRef } from "react";
 import { ListItemDTO } from "../types";
 import styled, {css} from "styled-components";
 import { SubtleInput } from "./style/inputs";
-import { FaGripVertical } from "react-icons/fa";
+import { FaGripVertical, FaTrash } from "react-icons/fa";
 import useClickOutside from "../hooks/use-click-outside";
 import useKeyPress from "../hooks/use-key-press";
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
@@ -10,6 +10,8 @@ import { Draggable } from "react-beautiful-dnd";
 import ListCheckbox from "./list-checkbox";
 import { Spacer } from "./style/utilities";
 import { CSSTransition } from "react-transition-group";
+import { IconButton } from "./style/buttons";
+import InfoTooltip from "./tooltips/info-tooltip";
 
 export interface ListItemProps {
     listItem: ListItemDTO;
@@ -29,22 +31,14 @@ const ListItem : FC<ListItemProps> = ({index, listItem, onItemEdited, onEditingC
     const enter = useKeyPress("Enter");
     const escape = useKeyPress("Escape");
 
-    const onEditConfirmButtonHandler = () => {
-        if(editing) {
-            onItemEdited(listItem.id, { id: listItem.id, notes: listItem.notes, value: editedValue || listItem.value, completed: listItem.completed });
-            setEditing(false);
-        }
-    }
-
-    const outsideClickRef = useClickOutside(onEditConfirmButtonHandler);
-
     useEffect(() => {
         setTransitionIn(true);
     }, []);
     
     useEffect(() => {
         if(editing) {
-            onEditConfirmButtonHandler();
+            onItemEdited(listItem.id, { id: listItem.id, notes: listItem.notes, value: editedValue || listItem.value, completed: listItem.completed });
+            setEditing(false);
         }
     }, [enter]);
 
@@ -81,7 +75,7 @@ const ListItem : FC<ListItemProps> = ({index, listItem, onItemEdited, onEditingC
         setEditing(false);
     }
     
-    const contextMenuDeleteClickHandler = () => {
+    const deleteButtonClickHandler = () => {
         setTransitionIn(false);
 
         setTimeout(() => {
@@ -101,17 +95,17 @@ const ListItem : FC<ListItemProps> = ({index, listItem, onItemEdited, onEditingC
                         shouldHide={hide && listItem.completed}
                         role="list-item">
                             <ContentContainer>
-                                <ContextMenuTrigger id={`list-item-context-${listItem.id}`}>
-                                    <ListCheckbox value={listItem.completed} onChange={checkboxChangedHandler} />
-                                    <Spacer marginX={4} />
-                                    {!editing && <StyledSpan role="list-item-value" onClick={onContainerClickHandler} complete={listItem.completed}>{listItem.value}</StyledSpan>}            
-                                    {editing && <SubtleInput ref={inputRef} role="list-item-input" value={editedValue} onChange={inputChangedHandler} onBlur={inputBlurredHandler}></SubtleInput>}
-                                </ContextMenuTrigger>
+                                <ListCheckbox value={listItem.completed} onChange={checkboxChangedHandler} />
+                                <Spacer marginX={4} />
+                                {!editing && <StyledSpan role="list-item-value" onClick={onContainerClickHandler} complete={listItem.completed}>{listItem.value}</StyledSpan>}            
+                                {editing && <SubtleInput ref={inputRef} role="list-item-input" value={editedValue} onChange={inputChangedHandler} onBlur={inputBlurredHandler}></SubtleInput>}
                             </ContentContainer>
+                            <InfoTooltip position="left" content={<span>Delete</span>}>
+                                <IconButton onClick={deleteButtonClickHandler}>
+                                    <FaTrash />
+                                </IconButton>
+                            </InfoTooltip>
                             <DragHandle {...provided.dragHandleProps}><FaGripVertical /></DragHandle>
-                            <ContextMenu id={`list-item-context-${listItem.id}`}>
-                                <MenuItem onClick={contextMenuDeleteClickHandler}>Delete</MenuItem>
-                            </ContextMenu>
                         </InnerContainer>
                     )}
                 </Draggable>
