@@ -76,6 +76,10 @@ const ListItem : FC<ListItemProps> = ({index, listItem, onItemEdited, onEditingC
     const inputChangedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEditedValue(event.target.value);
     }
+
+    const inputBlurredHandler = () => {
+        setEditing(false);
+    }
     
     const contextMenuDeleteClickHandler = () => {
         setTransitionIn(false);
@@ -96,12 +100,12 @@ const ListItem : FC<ListItemProps> = ({index, listItem, onItemEdited, onEditingC
                         isDragging={snapshot.isDragging}
                         shouldHide={hide && listItem.completed}
                         role="list-item">
-                            <ContentContainer ref={outsideClickRef}>
+                            <ContentContainer>
                                 <ContextMenuTrigger id={`list-item-context-${listItem.id}`}>
                                     <ListCheckbox value={listItem.completed} onChange={checkboxChangedHandler} />
                                     <Spacer marginX={4} />
                                     {!editing && <StyledSpan role="list-item-value" onClick={onContainerClickHandler} complete={listItem.completed}>{listItem.value}</StyledSpan>}            
-                                    {editing && <SubtleInput ref={inputRef} role="list-item-input" value={editedValue} onChange={inputChangedHandler}></SubtleInput>}
+                                    {editing && <SubtleInput ref={inputRef} role="list-item-input" value={editedValue} onChange={inputChangedHandler} onBlur={inputBlurredHandler}></SubtleInput>}
                                 </ContextMenuTrigger>
                             </ContentContainer>
                             <DragHandle {...provided.dragHandleProps}><FaGripVertical /></DragHandle>

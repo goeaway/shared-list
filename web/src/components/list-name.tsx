@@ -65,7 +65,7 @@ const ListName : FC<ListNameProps> = ({ name, onChange, onEditChanged }) => {
     }
 
     return (
-        <StyledContainer role="list-name" ref={clickOutsideRef}>
+        <StyledContainer role="list-name">
             {!editing && <NameSpan role="list-name-span" onClick={spanClickHandler}>{name}</NameSpan>}
             {editing && <SubtleInput value={editingValue} role="list-name-input" ref={inputRef} onChange={valueChangedHandler} onBlur={inputBlurHandler} />}
         </StyledContainer>
