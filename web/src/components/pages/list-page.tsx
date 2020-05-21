@@ -5,7 +5,7 @@ import List from "../list";
 import { ListDTO } from "../../types";
 import { createNewList } from "../../utils/create-new-list";
 import { useToasts } from "react-toast-notifications";
-import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
+import { HubConnectionBuilder, HubConnection, HubConnectionState } from "@aspnet/signalr";
 import useAuth from "../../hooks/use-auth";
 
 const ListPage : FC = ({}) => {
@@ -33,6 +33,10 @@ const ListPage : FC = ({}) => {
             }
 
             startConnection();
+
+            return async () => {
+                await connection.stop();
+            }
         }
     }, [connection]);
 
@@ -143,8 +147,8 @@ const ListPage : FC = ({}) => {
     return (
         <PageContainer>
             <ContentContainer>
-                {!ready && <LoadingContainer>Loading...</LoadingContainer>}
-                {ready && list && <ListContainer><List list={list} canCopy={!!id} showCopy onChange={onListChangeHandler} /> </ListContainer>}
+                {/* {!ready && <LoadingContainer>Loading...</LoadingContainer>} */}
+                {list && <ListContainer><List list={list} canCopy={!!id} showCopy onChange={onListChangeHandler} /> </ListContainer>}
             </ContentContainer>
         </PageContainer>
     );

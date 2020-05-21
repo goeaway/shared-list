@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { AccentButton, IconButton } from "./style/buttons";
 import useAuth from "../hooks/use-auth";
 import ListEmpty from "./list-empty";
+import InfoTooltip from "./tooltips/info-tooltip";
 
 export interface ListListProps {
     lists: Array<ListDTO>;
@@ -34,9 +35,11 @@ const ListList : FC<ListListProps> = ({ lists, onDelete }) => {
                             <ListPreviewLink to={`/list/${l.id}`} >
                                 {l.name}
                             </ListPreviewLink>
-                            <DeleteButton onClick={() => onDelete(l.id)}>
-                                <FaTrash />
-                            </DeleteButton>
+                            <InfoTooltip position="left" content={<span>Delete List</span>}>
+                                <DeleteButton onClick={() => onDelete(l.id)}>
+                                        <FaTrash />
+                                </DeleteButton>
+                            </InfoTooltip>
                         </ListPreview>)
                 }
             </ListsContainer>
@@ -59,10 +62,6 @@ const ControlBar = styled.div`
 const Title = styled.span`
     font-size: 22px;
     line-height: 34px;
-`
-
-const EmptyState = styled.div`
-
 `
 
 const ListsContainer = styled.div`
@@ -100,7 +99,5 @@ const ListPreviewLink = styled(Link)`
 `
 
 const DeleteButton = styled(IconButton)`
-    padding: .75rem;
-    position: absolute;
-    right: .5rem;
+    margin-right: .5rem;
 `

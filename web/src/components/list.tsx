@@ -160,7 +160,7 @@ const List : FC<ListProps> = ({ list, showCopy, canCopy, onChange }) => {
                     <InfoTooltip content={<span>Reset Completed</span>}>
                         <DefaultButton role="reset-completed" onClick={onUnCompleteAllClickHandler}><FaUndoAlt /></DefaultButton>
                     </InfoTooltip>
-                    <InfoTooltip content={<span>Hide Completed</span>}>
+                    <InfoTooltip content={<span>{hideCompleted ? "Show Completed" : "Hide Completed"}</span>}>
                         <DefaultButton role="hide-completed" onClick={onToggleHideCompleteHandler}>{hideCompleted ? <FaEye /> : <FaEyeSlash />}</DefaultButton>
                     </InfoTooltip>
                 </ControlBarInner>

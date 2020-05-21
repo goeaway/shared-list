@@ -36,7 +36,7 @@ const InfoTooltip: FC<InfoTooltipProps> = ({ disable, children, content, positio
 
     return (
         <Container>
-            <CSSTransition in={show} timeout={300} classNames="show-tooltip" appear={true}>
+            <CSSTransition in={show && !disable} timeout={300} classNames="show-tooltip">
                 <Tooltip position={position || "top"}>
                     {content}
                 </Tooltip>

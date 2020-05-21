@@ -30,6 +30,7 @@ const StyledContainer = styled.div`
     align-items: center;
     color: ${p => p.theme.gray5};
     transition: color .3s ease;
+    cursor: pointer;
 
     ${(p: StyledContainerProps) => p.checked && css`
         color: ${p => p.theme.accent4};

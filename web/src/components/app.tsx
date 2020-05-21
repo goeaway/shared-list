@@ -1,6 +1,6 @@
 import React, { FC, useState, useCallback } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, useLocation } from "react-router-dom";
 import ListPage from "./pages/list-page";
 import Light from "../themes/light";
 import { ToastProvider } from "react-toast-notifications";
@@ -13,6 +13,7 @@ import { isAuthenticated } from "../utils/authentication";
 import UserMenu from "./user-menu";
 import { FaHome } from "react-icons/fa";
 import { IconLink } from "./style/links";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const App : FC = () => {
     const [authData, setAuthData] = useState(getAuthData);
@@ -21,24 +22,29 @@ const App : FC = () => {
         storeAuthData(authData);
         setAuthData(authData);
     }
+    const location = useLocation();
     
     return (
         <ThemeProvider theme={Light}>
             <ToastProvider>
                 <AuthContext.Provider value={{ authData, isAuthed, setAuthentication: setTokensMiddleware }}>
                     <ConnectivityToaster />
-                    <Router>
                         <AppContainer>
                             <ControlBar>
                                 <HomeLink to="/" size={25}><FaHome /></HomeLink>
                                 {isAuthed() && <UserMenu />}
                             </ControlBar>
-                            <Switch>
-                                <AuthRoute path="/list/:id?" component={ListPage} />
-                                <Route exact path="/" component={props => <HomePage {...props} />} />
-                            </Switch>
+                            <TransitionGroup>
+                                <CSSTransition key={location.key} timeout={300} classNames="fade">
+                                    <Section>
+                                        <Switch>
+                                            <AuthRoute path="/list/:id?" component={ListPage} />
+                                            <Route exact path="/" component={props => <HomePage {...props} />} />
+                                        </Switch>
+                                    </Section>
+                                </CSSTransition>
+                            </TransitionGroup>
                         </AppContainer>
-                    </Router>
                 </AuthContext.Provider>
             </ToastProvider>
         </ThemeProvider>
@@ -55,6 +61,32 @@ const AppContainer = styled.div`
     color: ${p => p.theme.fontLight5};
     background: ${p => p.theme.background1};
     position: relative;
+
+    div.transition-group {
+        position: relative;
+    }
+
+    .fade-enter {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .fade-enter-active {
+        opacity: 1;
+        visibility: visible;
+        transition: all 300ms;
+    }
+
+    .fade-exit {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .fade-exit-active {
+        opacity: 0;
+        visibility: hidden;
+        transition: all 300ms;
+    }
 `
 
 const HomeLink = styled(IconLink)`
@@ -72,4 +104,8 @@ const ControlBar = styled.div`
     justify-content: space-between;
     z-index: 1000;
     padding: .75rem;
+`
+
+const Section = styled.section`
+    position: absolute;
 `
