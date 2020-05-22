@@ -12,6 +12,7 @@ import { Spacer } from "./style/utilities";
 import { CSSTransition } from "react-transition-group";
 import { IconButton } from "./style/buttons";
 import InfoTooltip from "./tooltips/info-tooltip";
+import ConfirmTooltip from "./tooltips/confirm-tooltip";
 
 export interface ListItemProps {
     listItem: ListItemDTO;
@@ -27,6 +28,7 @@ const ListItem : FC<ListItemProps> = ({index, listItem, onItemEdited, onEditingC
     const [editedValue, setEditedValue] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
     const [transitionIn, setTransitionIn] = useState(false);
+    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     
     const enter = useKeyPress("Enter");
     const escape = useKeyPress("Escape");
@@ -76,11 +78,20 @@ const ListItem : FC<ListItemProps> = ({index, listItem, onItemEdited, onEditingC
     }
     
     const deleteButtonClickHandler = () => {
+        setShowConfirmDelete(true);
+    }
+    
+    const deleteConfirmHandler = () => {
+        setShowConfirmDelete(false);
         setTransitionIn(false);
-
+    
         setTimeout(() => {
             onDelete(listItem.id);
         }, 300);
+    }
+
+    const deleteCancelHandler = () => {
+        setShowConfirmDelete(false);
     }
     
     return (
@@ -100,11 +111,13 @@ const ListItem : FC<ListItemProps> = ({index, listItem, onItemEdited, onEditingC
                                 {!editing && <StyledSpan role="list-item-value" onClick={onContainerClickHandler} complete={listItem.completed}>{listItem.value}</StyledSpan>}            
                                 {editing && <SubtleInput ref={inputRef} role="list-item-input" value={editedValue} onChange={inputChangedHandler} onBlur={inputBlurredHandler}></SubtleInput>}
                             </ContentContainer>
-                            <InfoTooltip position="left" content={<span>Delete</span>}>
-                                <IconButton onClick={deleteButtonClickHandler}>
-                                    <FaTrash />
-                                </IconButton>
-                            </InfoTooltip>
+                            <ConfirmTooltip position="left" content={<span>Are you sure you want to delete this item?</span>} onConfirm={deleteConfirmHandler} onDismiss={deleteCancelHandler} show={showConfirmDelete}>
+                                <InfoTooltip position="left" content={<span>Delete</span>} disable={showConfirmDelete}>
+                                    <IconButton onClick={deleteButtonClickHandler}>
+                                        <FaTrash />
+                                    </IconButton>
+                                </InfoTooltip>
+                            </ConfirmTooltip>
                             <DragHandle {...provided.dragHandleProps}><FaGripVertical /></DragHandle>
                         </InnerContainer>
                     )}
@@ -158,7 +171,6 @@ const InnerContainer = styled.div`
     display: flex;
     align-items: center;
     background: white;
-    overflow: hidden;
     text-overflow: ellipsis;
     background: ${p => p.theme.background1};
 

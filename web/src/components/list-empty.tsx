@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styled from "styled-components";
-import { FaClipboard } from "react-icons/fa";
+import { FaTasks } from "react-icons/fa";
 import { IconType } from "react-icons/lib/cjs/iconBase";
 
 export interface ListEmptyProps {
@@ -11,7 +11,7 @@ export interface ListEmptyProps {
 const ListEmpty : FC<ListEmptyProps> = ({ text, icon: Icon }) => {
     return (
         <StyledContainer role="list-empty">
-            {Icon ? <Icon role="list-empty-icon" size={100} /> : <FaClipboard role="list-empty-icon" size={100} />}
+            {Icon ? <Icon role="list-empty-icon" size={100} /> : <FaTasks role="list-empty-icon" size={100} />}
             <Text role="list-empty-text">{text || "No items, press Space to start"}</Text>
         </StyledContainer>
     );

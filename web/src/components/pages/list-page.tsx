@@ -5,8 +5,9 @@ import List from "../list";
 import { ListDTO } from "../../types";
 import { createNewList } from "../../utils/create-new-list";
 import { useToasts } from "react-toast-notifications";
-import { HubConnectionBuilder, HubConnection, HubConnectionState } from "@aspnet/signalr";
+import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
 import useAuth from "../../hooks/use-auth";
+import { FaSpinner } from "react-icons/fa";
 
 const ListPage : FC = ({}) => {
     const { id } = useParams();
@@ -147,8 +148,7 @@ const ListPage : FC = ({}) => {
     return (
         <PageContainer>
             <ContentContainer>
-                {/* {!ready && <LoadingContainer>Loading...</LoadingContainer>} */}
-                {list && <ListContainer><List list={list} canCopy={!!id} showCopy onChange={onListChangeHandler} /> </ListContainer>}
+                {list && <ListContainer><List list={list} canCopy={!!id} showCopy onChange={onListChangeHandler} /></ListContainer>}
             </ContentContainer>
         </PageContainer>
     );
@@ -169,6 +169,18 @@ const ContentContainer = styled.div`
     overflow-x: hidden;
     flex: 1 1 auto;
     padding: 5rem 1rem;
+
+    .fa-spin {
+        animation: fa-spin 2s infinite linear;
+      }
+      @keyframes fa-spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(359deg);
+        }
+      }
 `
 
 const ListContainer = styled.div`
@@ -186,4 +198,5 @@ const ListContainer = styled.div`
 
 const LoadingContainer = styled.div`
     padding: 5rem;
+    color: ${p => p.theme.fontLight5};
 `

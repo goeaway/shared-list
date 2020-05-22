@@ -14,6 +14,7 @@ import UserMenu from "./user-menu";
 import { FaHome } from "react-icons/fa";
 import { IconLink } from "./style/links";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import NotFoundPage from "./pages/not-found-page";
 
 const App : FC = () => {
     const [authData, setAuthData] = useState(getAuthData);
@@ -40,6 +41,7 @@ const App : FC = () => {
                                         <Switch>
                                             <AuthRoute path="/list/:id?" component={ListPage} />
                                             <Route exact path="/" component={props => <HomePage {...props} />} />
+                                            <Route component={NotFoundPage} />
                                         </Switch>
                                     </Section>
                                 </CSSTransition>
