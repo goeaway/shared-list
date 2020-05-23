@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styled from "styled-components";
-import { ListDTO } from "../types";
+import { ListDTO, ListPreviewDTO } from "../types";
 import { useHistory } from "react-router";
 import { FaPlus } from "react-icons/fa";
 import { AccentButton } from "./style/buttons";
@@ -8,7 +8,7 @@ import ListEmpty from "./list-empty";
 import ListPreview from "./list-preview";
 
 export interface ListListProps {
-    lists: Array<ListDTO>;
+    lists: Array<ListPreviewDTO>;
     onDelete: (id: string) => void;
     onAdd: () => void;
 }

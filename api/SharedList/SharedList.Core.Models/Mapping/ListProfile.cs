@@ -12,7 +12,7 @@ namespace SharedList.Core.Models.Mapping
         public ListProfile()
         {
             CreateMap<List, ListDTO>();
-            CreateMap<List, ListNameAndIdDTO>();
+            CreateMap<List, ListPreviewDTO>();
         }
     }
 }

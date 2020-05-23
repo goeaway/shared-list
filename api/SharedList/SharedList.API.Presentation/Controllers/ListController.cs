@@ -33,11 +33,11 @@ namespace SharedList.API.Presentation.Controllers
             _contextAccessor = contextAccessor;
         }
 
-        [HttpGet("getuserlists")]
-        public Task<IEnumerable<ListDTO>> GetListsForUser()
+        [HttpGet("getlistpreviews")]
+        public Task<IEnumerable<ListPreviewDTO>> GetListPreviews()
         {
             var userIdent = _contextAccessor.GetUserIdent();
-            return _mediator.Send(new GetListsForUserRequest(userIdent));
+            return _mediator.Send(new GetListPreviewsRequest(userIdent));
         }
 
         [HttpGet("getname")]

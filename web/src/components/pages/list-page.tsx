@@ -8,6 +8,7 @@ import { useToasts } from "react-toast-notifications";
 import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
 import useAuth from "../../hooks/use-auth";
 import { FaSpinner } from "react-icons/fa";
+import ListEmpty from "../list-empty";
 
 const ListPage : FC = ({}) => {
     const { id } = useParams();
@@ -106,7 +107,7 @@ const ListPage : FC = ({}) => {
     return (
         <PageContainer>
             <ContentContainer>
-                {!ready && <LoadingContainer><FaSpinner size={100} className="fa-spin" /></LoadingContainer>}
+                {!ready && <ListEmpty icon={FaSpinner} text="Loading..." spin />}
                 {ready && list && <ListContainer><List list={list} canCopy={!!id} showCopy onChange={onListChangeHandler} /></ListContainer>}
             </ContentContainer>
         </PageContainer>
@@ -128,18 +129,6 @@ const ContentContainer = styled.div`
     overflow-x: hidden;
     flex: 1 1 auto;
     padding: 5rem 1rem;
-
-    .fa-spin {
-        animation: fa-spin 2s infinite linear;
-      }
-      @keyframes fa-spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(359deg);
-        }
-      }
 `
 
 const ListContainer = styled.div`

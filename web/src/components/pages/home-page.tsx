@@ -6,18 +6,18 @@ import List from "../list";
 import { v1 } from "uuid";
 import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router";
-import { AuthenticationResponse, ListDTO } from "../../types";
+import { AuthenticationResponse, ListDTO, ListPreviewDTO } from "../../types";
 
 const HomePage : FC<any> = ({ location }) => {
     const { authData, isAuthed, setAuthentication } = useAuth();
     const { push } = useHistory();
     const [demoList, setDemoList] = useState<ListDTO>({id: v1(), name: "", items: []});
-    const [userLists, setUserLists] = useState<Array<ListDTO>>([]);
+    const [userLists, setUserLists] = useState<Array<ListPreviewDTO>>([]);
 
     useEffect(() => {
         if(isAuthed(authData)) {
             // make request for user lists
-            fetch("https://localhost:44327/list/getuserlists", {
+            fetch("https://localhost:44327/list/getlistpreviews", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -27,7 +27,7 @@ const HomePage : FC<any> = ({ location }) => {
             .then(response => {
                 if(response.ok) {
                     response.json().then(json => {
-                        setUserLists(json as Array<ListDTO>);
+                        setUserLists(json as Array<ListPreviewDTO>);
                     });
                 }
             })

@@ -104,36 +104,6 @@ namespace SharedList.API.Tests.Mapping
             Assert.AreEqual(1, dto.Items.Count);
         }
 
-        [TestMethod]
-        public void LISTNAMEANDIDDTO_MapsListIdToDTOId()
-        {
-            var mapper = CreateMapper();
-            const string ID = "1";
-
-            var list = new List
-            {
-                Id = ID
-            };
-
-            var dto = mapper.Map<ListNameAndIdDTO>(list);
-
-            Assert.AreEqual(ID, dto.Id);
-        }
-
-        [TestMethod]
-        public void LISTNAMEANDIDDTO_MapsListNameToDTOName()
-        {
-            var mapper = CreateMapper();
-            const string NAME = "1";
-
-            var list = new List
-            {
-                Name = NAME
-            };
-
-            var dto = mapper.Map<ListNameAndIdDTO>(list);
-
-            Assert.AreEqual(NAME, dto.Name);
-        }
+        
     }
 }

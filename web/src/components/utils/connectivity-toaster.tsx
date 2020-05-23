@@ -21,7 +21,7 @@ const ConnectivityToaster : FC<ConnectivityToasterProps> = ({onOnline, onOffline
         }
 
         const offlineHandler = () => {
-            addToast(<span>Connection lost. Changes made will not be synchronised.</span>, {
+            addToast(<span>Connection lost. Changes will not be synchronised.</span>, {
                 appearance: "error"
             });
 

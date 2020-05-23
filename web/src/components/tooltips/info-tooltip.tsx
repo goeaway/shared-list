@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState, useEffect } from "react";
+import React, { FC, ReactNode, useState, useEffect, useLayoutEffect, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 import styled, { css } from "styled-components";
 
@@ -6,9 +6,10 @@ export interface InfoTooltipProps {
     content?: ReactNode;
     disable?: boolean;
     position?: "top" | "bottom" | "left" | "right";
+    delay?: number;
 }
 
-const InfoTooltip: FC<InfoTooltipProps> = ({ disable, children, content, position }) => {
+const InfoTooltip: FC<InfoTooltipProps> = ({ delay, disable, children, content, position }) => {
     const [show, setShow] = useState(false);
     const [hovering, setHovering] = useState(false);
 
@@ -18,13 +19,14 @@ const InfoTooltip: FC<InfoTooltipProps> = ({ disable, children, content, positio
                 if(hovering) {
                     setShow(true);
                 }
-            }, 500);
+            }, !delay || delay < 0 ? 500 : delay);
 
             return () => clearTimeout(timeout);
         } else if(show) {
             setShow(false);
         }
     }, [hovering]);
+
 
     const onMouseEnterHandler = () => {
         setHovering(true);
@@ -41,16 +43,16 @@ const InfoTooltip: FC<InfoTooltipProps> = ({ disable, children, content, positio
                     {content}
                 </Tooltip>
             </CSSTransition>
-            <div onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseOutHandler}>
+            <span onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseOutHandler}>
                 {children}
-            </div>
+            </span>
         </Container>
     );
 }
 
 export default InfoTooltip;
 
-const Container = styled.div`
+const Container = styled.span`
     position: relative;
     display: flex;
     align-items: center;
@@ -98,7 +100,7 @@ const Tooltip = styled.div`
     background: ${p => p.theme.accent4};
     padding: .2rem .5rem;
     font-size: 12px;
-    line-height: 16px;
+    line-height: 18px;
     border-radius: 3px;
     opacity: 0;
     visibility: hidden;
@@ -106,13 +108,13 @@ const Tooltip = styled.div`
     white-space: nowrap;
 
     ${(p: TooltipProps) => p.position === "top" && css`
-        top: -70%;
+        bottom: 150%;
         left: 50%;
         transform: translateX(-50%);
     `}
 
     ${(p: TooltipProps) => p.position === "bottom" && css`
-        bottom: -70%;
+        top: 150%;
         left: 50%;
         transform: translateX(-50%);
     `}

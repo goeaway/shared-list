@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { ListDTO } from "../types";
+import { ListDTO, ListPreviewDTO } from "../types";
 import styled from "styled-components";
 import InfoTooltip from "./tooltips/info-tooltip";
 import { Link } from "react-router-dom";
@@ -7,9 +7,10 @@ import { IconButton } from "./style/buttons";
 import { FaTrash } from "react-icons/fa";
 import { CSSTransition } from "react-transition-group";
 import ConfirmTooltip from "./tooltips/confirm-tooltip";
+import ListContributors from "./list-contributors";
 
 export interface ListPreviewProps {
-    list: ListDTO;
+    list: ListPreviewDTO;
     onDelete: (id: string) => void;
 }
 
@@ -40,6 +41,7 @@ const ListPreview : FC<ListPreviewProps> = ({list, onDelete}) => {
                 <InnerContainer>
                     <ListPreviewLink to={`/list/${list.id}`} >
                         {list.name}
+                        <ListContributors contributors={list.otherContributors || []} />
                     </ListPreviewLink>
                     <ConfirmTooltip position="left" content={<span>Are you sure you want to delete this list?</span>} onConfirm={deleteConfirmHandler} onDismiss={deleteCancelHandler} show={showDeleteConfirm}>
                         <InfoTooltip position="left" content={<span>Delete List</span>} disable={showDeleteConfirm}>
@@ -113,6 +115,8 @@ const ListPreviewLink = styled(Link)`
     color: ${p => p.theme.fontLight5};
     flex: 1 1 auto;
     transition: color 300ms;
+    display: flex;
+    flex-direction: column;
 
     &:hover {
         color: ${p => p.theme.fontDark2};

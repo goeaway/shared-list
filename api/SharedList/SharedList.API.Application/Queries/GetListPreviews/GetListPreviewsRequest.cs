@@ -4,11 +4,11 @@ using SharedList.Core.Models.DTOs;
 
 namespace SharedList.API.Application.Queries.GetListsForUser
 {
-    public class GetListsForUserRequest : IRequest<IEnumerable<ListDTO>>
+    public class GetListPreviewsRequest : IRequest<IEnumerable<ListPreviewDTO>>
     {
         public string UserIdent { get; set; }
 
-        public GetListsForUserRequest(string userIdent)
+        public GetListPreviewsRequest(string userIdent)
         {
             UserIdent = userIdent;
         }

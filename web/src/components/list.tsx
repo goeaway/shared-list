@@ -8,7 +8,7 @@ import ListItem from "./list-item";
 import { v1 } from "uuid";
 import useKeyPress from "../hooks/use-key-press";
 import useClickOutside from "../hooks/use-click-outside";
-import { FaShareAlt, FaUndoAlt, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaShareAlt, FaUndoAlt, FaEye, FaEyeSlash, FaCheckCircle } from "react-icons/fa";
 import styled from "styled-components";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useToasts } from "react-toast-notifications";
@@ -168,6 +168,7 @@ const List : FC<ListProps> = ({ list, showCopy, canCopy, onChange }) => {
             <ListInput onAdd={inputOnAddHandler} onLoseFocus={inputRequestLoseFocusHandler} onRequestFocus={inputRequestFocusHandler} focus={inputFocus} clickOutsideRef={outsideInputClickRef} />
             <ItemContainer role="list-items-container">
                 {items.length === 0 && <ListEmpty />}
+                {items.length > 0 && hideCompleted && items.filter(i => !i.completed).length === 0 && <ListEmpty icon={FaCheckCircle} text="All items complete" />}
                 {items.length > 0 && 
                     <DragDropContext onDragEnd={dragEndHandler}>
                         <Droppable droppableId="list-item-drop">

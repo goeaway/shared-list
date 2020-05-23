@@ -6,12 +6,13 @@ import { IconType } from "react-icons/lib/cjs/iconBase";
 export interface ListEmptyProps {
     text?: string;
     icon?: IconType;
+    spin?: boolean;
 }
 
-const ListEmpty : FC<ListEmptyProps> = ({ text, icon: Icon }) => {
+const ListEmpty : FC<ListEmptyProps> = ({ text, icon: Icon, spin }) => {
     return (
         <StyledContainer role="list-empty">
-            {Icon ? <Icon role="list-empty-icon" size={100} /> : <FaTasks role="list-empty-icon" size={100} />}
+            {Icon ? <Icon role="list-empty-icon" size={100} className={spin ? "fa-spin" : ""} /> : <FaTasks role="list-empty-icon" size={100} className={spin ? "fa-spin" : ""} />}
             <Text role="list-empty-text">{text || "No items, press Space to start"}</Text>
         </StyledContainer>
     );
@@ -29,6 +30,19 @@ const StyledContainer = styled.div`
 
     > *:first-child {
         margin-bottom: 1rem;
+    }
+
+    .fa-spin {
+        animation: fa-spin 2s infinite linear;
+    }
+
+    @keyframes fa-spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(359deg);
+        }
     }
 `
     

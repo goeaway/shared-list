@@ -4,6 +4,12 @@ export interface ListDTO {
     name: string;
 }
 
+export interface ListPreviewDTO {
+    id: string;
+    name: string;
+    otherContributors: Array<string>;
+}
+
 export interface ListItemDTO {
     value: string;
     notes: string;
