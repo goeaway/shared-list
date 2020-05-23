@@ -24,7 +24,7 @@ namespace SharedList.Core.Implementations
             _animals = File.ReadAllLines(Path.Combine(basePath, "animals.txt"));
         }
 
-        public string CreateWordsString()
+        public string CreateRandomId()
         {
             // pick two random adjectives
             // then pick either an animal or a dessert
@@ -35,6 +35,17 @@ namespace SharedList.Core.Implementations
                 : _desserts[_random.Next(0, _desserts.Count - 1)];
 
             return adj1 + adj2 + noun; 
+        }
+
+        public string CreateRandomName()
+        {
+            var adj = _adjectives[_random.Next(0, _adjectives.Count - 1)].Capitalise();
+            var noun = _random.Next(0, 2) == 1
+                ? _animals[_random.Next(0, _animals.Count - 1)]
+                : _desserts[_random.Next(0, _desserts.Count - 1)];
+
+            return $"{adj} {noun}";
+
         }
     }
 }

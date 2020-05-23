@@ -292,7 +292,7 @@ namespace SharedList.API.Tests.Commands
             const string LIST_ID = "list id";
             var idProviderMock = new Mock<IRandomisedWordProvider>();
             idProviderMock
-                .Setup(m => m.CreateWordsString())
+                .Setup(m => m.CreateRandomId())
                 .Returns(LIST_ID);
 
             var (context, nowProvider, _) = CreateDeps();

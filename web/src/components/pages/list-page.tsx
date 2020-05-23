@@ -11,7 +11,7 @@ import { FaSpinner } from "react-icons/fa";
 
 const ListPage : FC = ({}) => {
     const { id } = useParams();
-    const { replace } = useHistory();
+    const { push } = useHistory();
     const [ready, setReady] = useState(false);
     const [list, setList] = useState<ListDTO>();
     const [connection, setConnection] = useState<HubConnection>(null);
@@ -42,113 +42,72 @@ const ListPage : FC = ({}) => {
     }, [connection]);
 
     useEffect(() => {
-        if(id) {
-            const timerStart = performance.now();
-            const errorHandler = () => {
-                addToast(<span>Couldn't find your list. A new one has been created</span>, {
-                    appearance: 'error',
-                    autoDismiss: false
-                });
-                setList(createNewList());
-                replace("/list");
-            }
-
-            fetch(`https://localhost:44327/list/get/${id}`, {
-                method: "GET",
-                headers: { 
-                    'Authorization': `Bearer ${authData.jwt}` 
-                },
-            })
-            .then(response => {
-                if(response.ok) {
-                    response.json().then((data: ListDTO) => {
-                        setList(data);
-                        // establish connection here
-                        setConnection(new HubConnectionBuilder()
-                            .withUrl("https://localhost:44327/listHub", { accessTokenFactory: () => authData.jwt })
-                            .build());
-                    });
-                } else {
-                    if(response.status === 401) {
-                        setAuthentication(undefined);
-                    }
-                    errorHandler();
-                }
-            })
-            .catch(reason => {
-                errorHandler();
-            })
-            .finally(() => {
-                // avoid jumps by forcing us to wait for at least 400 milliseconds
-                const timerStop = performance.now();
-                const waitTime = 400 - (timerStop - timerStart);
-                if(waitTime > 0) {
-                    setTimeout(() => {
-                        setReady(true);
-                    }, waitTime);
-                } else {
-                    setReady(true);
-                }
+        const timerStart = performance.now();
+        const errorHandler = () => {
+            addToast(<span>Couldn't find your list.</span>, {
+                appearance: 'error',
+                autoDismiss: false
             });
-        } else {
-            setReady(true);
             setList(createNewList());
+            push("/");
         }
+
+        fetch(`https://localhost:44327/list/get/${id}`, {
+            method: "GET",
+            headers: { 
+                'Authorization': `Bearer ${authData.jwt}` 
+            },
+        })
+        .then(response => {
+            if(response.ok) {
+                response.json().then((data: ListDTO) => {
+                    setList(data);
+                    // establish connection here
+                    setConnection(new HubConnectionBuilder()
+                        .withUrl("https://localhost:44327/listHub", { accessTokenFactory: () => authData.jwt })
+                        .build());
+                });
+            } else {
+                if(response.status === 401) {
+                    setAuthentication(undefined);
+                }
+                errorHandler();
+            }
+        })
+        .catch(reason => {
+            errorHandler();
+        })
+        .finally(() => {
+            // avoid jumps by forcing us to wait for at least 400 milliseconds
+            const timerStop = performance.now();
+            const waitTime = 400 - (timerStop - timerStart);
+            if(waitTime > 0) {
+                setTimeout(() => {
+                    setReady(true);
+                }, waitTime);
+            } else {
+                setReady(true);
+            }
+        });
     }, [id]);
 
     async function onListChangeHandler (newList: ListDTO) {
-        // if we have an id just update, otherwise create
-        if(newList.id) {
-            if(connection) {
-                await connection.invoke("updatelist", newList);
-            } else {
-                const result = await fetch("https://localhost:44327/list/update", {
-                    method: "PUT",
-                    headers: { 'content-type': 'application/json', 'Authorization': `Bearer ${authData.jwt}` },
-                    body: JSON.stringify(newList)
-                });
-            }
+        if(connection) {
+            await connection.invoke("updatelist", newList);
         } else {
-            const handleCreateError = () => {
-                addToast(<span>Couldn't save your list.</span>, {
-                    appearance: "error",
-                    autoDismiss: false
-                });
-            }
-
-            try {
-                const result = await fetch("https://localhost:44327/list/create", {
-                    method: "POST",
-                    headers: { 
-                        'content-type': 'application/json', 
-                        'Authorization': `Bearer ${authData.jwt}` 
-                    },
-                    body: JSON.stringify(newList)
-                });
-    
-                if(result.ok) {
-                    const newId = await result.text();
-                    replace(`/list/${newId}`);
-                    addToast(<span>Your list has been saved. Share your list to collaborate with others.</span>, {
-                        appearance: "info",
-                        autoDismiss: true
-                    });
-                } else {
-                    if(result.status === 401) {
-                        setAuthentication(undefined);
-                    }
-                    handleCreateError();
-                }
-            } catch {
-                handleCreateError();
-            }
+            const result = await fetch("https://localhost:44327/list/update", {
+                method: "PUT",
+                headers: { 'content-type': 'application/json', 'Authorization': `Bearer ${authData.jwt}` },
+                body: JSON.stringify(newList)
+            });
         }
     }
 
     return (
         <PageContainer>
             <ContentContainer>
-                {list && <ListContainer><List list={list} canCopy={!!id} showCopy onChange={onListChangeHandler} /></ListContainer>}
+                {!ready && <LoadingContainer><FaSpinner size={100} className="fa-spin" /></LoadingContainer>}
+                {ready && list && <ListContainer><List list={list} canCopy={!!id} showCopy onChange={onListChangeHandler} /></ListContainer>}
             </ContentContainer>
         </PageContainer>
     );

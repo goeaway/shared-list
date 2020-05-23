@@ -10,19 +10,15 @@ import ListPreview from "./list-preview";
 export interface ListListProps {
     lists: Array<ListDTO>;
     onDelete: (id: string) => void;
+    onAdd: () => void;
 }
 
-const ListList : FC<ListListProps> = ({ lists, onDelete }) => {
-    const { push } = useHistory();
-    const onNewListClickHandler = () => {
-        push("/list");
-    }
-
+const ListList : FC<ListListProps> = ({ lists, onDelete, onAdd }) => {
     return (
         <Container>
             <ControlBar>
                 <Title>Your Lists</Title>            
-                <AccentButton onClick={onNewListClickHandler}><FaPlus />&nbsp;Add New List</AccentButton>
+                <AccentButton onClick={onAdd}><FaPlus />&nbsp;Add New List</AccentButton>
             </ControlBar>
             <ListsContainer>
                 {lists.length === 0 && <ListEmpty text="No lists yet..."></ListEmpty>}

@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SharedList.API.Application.Commands.CreateEmptyList;
 using SharedList.API.Application.Commands.CreateList;
 using SharedList.API.Application.Commands.DeleteList;
 using SharedList.API.Application.Commands.UpdateList;
 using SharedList.API.Application.Queries.GetList;
 using SharedList.API.Application.Queries.GetListsForUser;
+using SharedList.API.Application.Queries.GetName;
 using SharedList.Core.Extensions;
 using SharedList.Core.Models.DTOs;
 
@@ -38,10 +40,24 @@ namespace SharedList.API.Presentation.Controllers
             return _mediator.Send(new GetListsForUserRequest(userIdent));
         }
 
+        [HttpGet("getname")]
+        [AllowAnonymous]
+        public Task<string> GetName()
+        {
+            return _mediator.Send(new GetNameRequest());
+        }
+
         [HttpGet("get/{id}")]
         public Task<ListDTO> Get(string id)
         {
             return _mediator.Send(new GetListRequest(id));
+        }
+
+        [HttpPost("createempty")]
+        public Task<string> CreateEmpty()
+        {
+            var userIdent = _contextAccessor.GetUserIdent();
+            return _mediator.Send(new CreateEmptyListRequest(userIdent));
         }
 
         [HttpPost("create")]

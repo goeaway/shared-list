@@ -6,6 +6,7 @@ namespace SharedList.Core.Abstractions
 {
     public interface IRandomisedWordProvider
     {
-        string CreateWordsString();
+        string CreateRandomId();
+        string CreateRandomName();
     }
 }

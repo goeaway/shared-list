@@ -11,7 +11,7 @@ import { AuthenticationResponse, ListDTO } from "../../types";
 const HomePage : FC<any> = ({ location }) => {
     const { authData, isAuthed, setAuthentication } = useAuth();
     const { push } = useHistory();
-    const demoList = { id: v1(), name: "demo", items: [] };
+    const [demoList, setDemoList] = useState<ListDTO>({id: v1(), name: "", items: []});
     const [userLists, setUserLists] = useState<Array<ListDTO>>([]);
 
     useEffect(() => {
@@ -34,6 +34,15 @@ const HomePage : FC<any> = ({ location }) => {
             .catch(reason => {
 
             });
+        } else {
+            fetch("https://localhost:44327/list/getname")
+            .then(response => {
+                if(response.ok) {
+                    response.text().then(name => {
+                        setDemoList({id: v1(), name, items: []});
+                    });
+                }
+            })
         }
     }, []);
 
@@ -82,13 +91,27 @@ const HomePage : FC<any> = ({ location }) => {
         }
     }
 
+    const onAddListHandler = async () => {
+        const result = await fetch("https://localhost:44327/list/createempty", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${authData.jwt}`
+            }
+        });
+
+        if(result.ok) {
+            const newId = await result.text();
+            push(`/list/${newId}`);
+        }
+    }
+
     return (
         <Container>
             <Title>Share The Shop</Title>
             {
                 !isAuthed(authData) && 
                 <DemoContainer> 
-                    <ContentLeft><List list={demoList} /></ContentLeft>
+                    <ContentLeft><List list={demoList}/></ContentLeft>
                     <ContentRight>
                         <Copy>
                             Create and collaborate on shopping lists in real time. Get started now by signing in below.
@@ -104,7 +127,7 @@ const HomePage : FC<any> = ({ location }) => {
             }
             { 
                 isAuthed(authData) &&
-                <ListList lists={userLists} onDelete={onDeleteListHandler} />
+                <ListList lists={userLists} onDelete={onDeleteListHandler} onAdd={onAddListHandler} />
             }
         </Container>
     );

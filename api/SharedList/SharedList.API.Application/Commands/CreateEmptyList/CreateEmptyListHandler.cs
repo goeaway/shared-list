@@ -1,47 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using SharedList.Core.Abstractions;
+using SharedList.Core.Models.DTOs;
 using SharedList.Core.Models.Entities;
 using SharedList.Persistence;
 using SharedList.Persistence.Models.Entities;
 
-namespace SharedList.API.Application.Commands.CreateList
+namespace SharedList.API.Application.Commands.CreateEmptyList
 {
-    public class CreateListHandler : IRequestHandler<CreateListRequest, string>
+    public class CreateEmptyListHandler : IRequestHandler<CreateEmptyListRequest, string>
     {
         private readonly SharedListContext _context;
         private readonly INowProvider _nowProvider;
         private readonly IRandomisedWordProvider _randomisedWordProvider;
 
-        public CreateListHandler(SharedListContext context, INowProvider nowProvider, IRandomisedWordProvider randomisedWordProvider)
+        public CreateEmptyListHandler(SharedListContext context, INowProvider nowProvider,
+            IRandomisedWordProvider randomisedWordProvider)
         {
             _context = context;
             _nowProvider = nowProvider;
             _randomisedWordProvider = randomisedWordProvider;
         }
 
-        public async Task<string> Handle(CreateListRequest request, CancellationToken cancellationToken)
+        public async Task<string> Handle(CreateEmptyListRequest request, CancellationToken cancellationToken)
         {
             var list = new List
             {
                 Id = _randomisedWordProvider.CreateRandomId(),
-                Name = request.DTO.Name?.Trim(),
+                Name = _randomisedWordProvider.CreateRandomName(),
                 Created = _nowProvider.Now,
                 Updated = _nowProvider.Now,
-                Items = request.DTO.Items?.Select((i, index) => new ListItem
-                {
-                    Id = i.Id.Trim(),
-                    Order = index,
-                    Value = i.Value?.Trim(),
-                    Notes = i.Notes?.Trim(),
-                    Completed = i.Completed,
-                    Created = _nowProvider.Now
-                }).ToList()
             };
 
             var contribution = new ListContributor
