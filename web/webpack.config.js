@@ -5,9 +5,9 @@ module.exports = env => {
     return {
         entry: "./src/index.tsx",
         mode: env.production === "production" ? "production" : "development",
-        plugins: [
-            new analyser()
-        ],
+        // plugins: [
+        //     new analyser()
+        // ],
         output: {
             path: path.resolve(__dirname, "dist"),
             filename: "bundle.js",
