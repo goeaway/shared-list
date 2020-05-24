@@ -1,6 +1,6 @@
-import React, { FC, useState, useCallback, memo } from "react";
+import React, { FC, useState, useCallback } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { BrowserRouter as Router, Switch, Route, useLocation } from "react-router-dom";
+import { Switch, Route, useLocation } from "react-router-dom";
 import ListPage from "./pages/list-page";
 import Light from "../themes/light";
 import { ToastProvider } from "react-toast-notifications";
@@ -13,7 +13,6 @@ import { isAuthenticated } from "../utils/authentication";
 import UserMenu from "./user-menu";
 import { FaHome } from "react-icons/fa";
 import { IconLink } from "./style/links";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 import NotFoundPage from "./pages/not-found-page";
 
 const App : FC = () => {
@@ -23,7 +22,6 @@ const App : FC = () => {
         storeAuthData(authData);
         setAuthData(authData);
     }
-    const location = useLocation();
     
     return (
         <ThemeProvider theme={Light}>

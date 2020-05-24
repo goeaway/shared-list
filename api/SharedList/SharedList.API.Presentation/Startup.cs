@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -46,7 +47,7 @@ namespace SharedList.API.Presentation
             {
                 options.AddPolicy(AllowSpecificOriginsCORSPolicy, builder =>
                     {
-                        builder.WithOrigins("http://localhost:8080");
+                        builder.WithOrigins(Configuration["URLs:FrontEnd"]);
                         builder.AllowAnyMethod();
                         builder.AllowAnyHeader();
                         builder.AllowCredentials();
@@ -67,7 +68,6 @@ namespace SharedList.API.Presentation
 
             services.AddNowProvider();
             services.AddRandomWordsProvider();
-            services.AddLogger();
             services.AddAutoMapper(typeof(List));
             services.AddMediatR(Assembly.GetAssembly(typeof(ValidationBehaviour<,>)));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
@@ -107,6 +107,8 @@ namespace SharedList.API.Presentation
                         }
                     };
                 });
+
+            services.AddFileLogger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

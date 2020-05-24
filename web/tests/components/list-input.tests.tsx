@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import ListInput from "../../src/components/list-input";
+import ListInput from "@src/components/list-input";
 import { SinonStub, createSandbox } from "sinon";
 import React from "react";
 

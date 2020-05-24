@@ -26,13 +26,20 @@ namespace SharedList.API.Presentation
             return collection;
         }
 
-        public static IServiceCollection AddLogger(this IServiceCollection collection)
+        public static IServiceCollection AddFileLogger(this IServiceCollection collection)
         {
             var path = Path.Combine(AppContext.BaseDirectory, "log-{Date}.log");
             var logger = new LoggerConfiguration()
                 .WriteTo.RollingFile(path)
                 .CreateLogger();
             collection.AddSingleton<ILogger>(logger);
+            return collection;
+        }
+
+        public static IServiceCollection AddDbLogger(this IServiceCollection collection, string connectionString)
+        {
+            var logger = new LoggerConfiguration()
+                .WriteTo.MSSqlServer(connectionString);
             return collection;
         }
 

@@ -9,6 +9,7 @@ import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
 import useAuth from "../../hooks/use-auth";
 import { FaSpinner } from "react-icons/fa";
 import ListEmpty from "../list-empty";
+import { config } from "@config/production";
 
 const ListPage : FC = ({}) => {
     const { id } = useParams();
@@ -53,7 +54,7 @@ const ListPage : FC = ({}) => {
             push("/");
         }
 
-        fetch(`https://localhost:44327/list/get/${id}`, {
+        fetch(`${config.apiURL}/list/get/${id}`, {
             method: "GET",
             headers: { 
                 'Authorization': `Bearer ${authData.jwt}` 
@@ -65,7 +66,7 @@ const ListPage : FC = ({}) => {
                     setList(data);
                     // establish connection here
                     setConnection(new HubConnectionBuilder()
-                        .withUrl("https://localhost:44327/listHub", { accessTokenFactory: () => authData.jwt })
+                        .withUrl(`${config.apiURL}/listHub`, { accessTokenFactory: () => authData.jwt })
                         .build());
                 });
             } else {
@@ -96,7 +97,7 @@ const ListPage : FC = ({}) => {
         if(connection) {
             await connection.invoke("updatelist", newList);
         } else {
-            const result = await fetch("https://localhost:44327/list/update", {
+            const result = await fetch(`${config.apiURL}/list/update`, {
                 method: "PUT",
                 headers: { 'content-type': 'application/json', 'Authorization': `Bearer ${authData.jwt}` },
                 body: JSON.stringify(newList)

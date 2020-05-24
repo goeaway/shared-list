@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import ListName from "../../src/components/list-name";
+import ListName from "@src/components/list-name";
 import { SinonStub, createSandbox } from "sinon";
 
 describe("Tests the list name component", () => {

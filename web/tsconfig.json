@@ -6,7 +6,12 @@
       "lib": ["es6", "dom"],
       "moduleResolution": "node",
       "esModuleInterop": true,
-      "sourceMap": true
+      "sourceMap": true,
+      "baseUrl": ".",
+      "paths": {
+        "@src/*": ["src/*"],
+        "@config/*": ["src/config/*"]
+      }
     },
     "exclude": ["node_modules"]
 }

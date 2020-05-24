@@ -7,6 +7,7 @@ import { v1 } from "uuid";
 import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router";
 import { AuthenticationResponse, ListDTO, ListPreviewDTO } from "../../types";
+import { config } from "@config/production";
 
 const HomePage : FC<any> = ({ location }) => {
     const { authData, isAuthed, setAuthentication } = useAuth();
@@ -17,7 +18,7 @@ const HomePage : FC<any> = ({ location }) => {
     useEffect(() => {
         if(isAuthed(authData)) {
             // make request for user lists
-            fetch("https://localhost:44327/list/getlistpreviews", {
+            fetch(`${config.apiURL}/list/getlistpreviews`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -35,7 +36,7 @@ const HomePage : FC<any> = ({ location }) => {
 
             });
         } else {
-            fetch("https://localhost:44327/list/getname")
+            fetch(`${config.apiURL}/list/getname`)
             .then(response => {
                 if(response.ok) {
                     response.text().then(name => {
@@ -48,7 +49,7 @@ const HomePage : FC<any> = ({ location }) => {
 
     const loginSuccess = async (response) => {
         // make request to API to register this user and get an API auth token
-        const result = await fetch(`https://localhost:44327/auth/authenticate?idToken=${response.tokenId}`, {
+        const result = await fetch(`${config.apiURL}/auth/authenticate?idToken=${response.tokenId}`, {
             method: "POST"
         });
 
@@ -74,7 +75,7 @@ const HomePage : FC<any> = ({ location }) => {
     }
 
     const onDeleteListHandler = async (id: string) => {
-        const result = await fetch(`https://localhost:44327/list/delete/${id}`, {
+        const result = await fetch(`${config.apiURL}/list/delete/${id}`, {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${authData.jwt}`
@@ -92,7 +93,7 @@ const HomePage : FC<any> = ({ location }) => {
     }
 
     const onAddListHandler = async () => {
-        const result = await fetch("https://localhost:44327/list/createempty", {
+        const result = await fetch(`${config.apiURL}/list/createempty`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${authData.jwt}`
@@ -117,7 +118,7 @@ const HomePage : FC<any> = ({ location }) => {
                             Create and collaborate on shopping lists in real time. Get started now by signing in below.
                         </Copy>
                         <GoogleLogin 
-                            clientId="787759781218-fa57asnept105qrlmv80tf4877jgkhvk.apps.googleusercontent.com"
+                            clientId={config.googleAuthClientId}
                             onSuccess={loginSuccess}
                             onFailure={loginFailure}
                             cookiePolicy="single_host_origin"

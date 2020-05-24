@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
 import React from "react";
-import ListItem from "../../src/components/list-item";
-import { ListItemDTO } from "../../src/types";
+import ListItem from "@src/components/list-item";
+import { ListItemDTO } from "@src/types";
 import createListItem from "../utils/create-list-item";
 import { SinonStub, createSandbox } from "sinon";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";

@@ -1,6 +1,6 @@
-import List from "../../src/components/list";
+import List from "@src/components/list";
 import React from "react";
-import { ListDTO } from "../../src/types";
+import { ListDTO } from "@src/types";
 import createList from "../utils/create-list";
 import createListItem from "../utils/create-list-item";
 import { render, screen, fireEvent } from "@testing-library/react";
