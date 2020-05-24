@@ -1,4 +1,4 @@
 export const config = {
     apiURL: "https://api.sharethe.shop",
-    googleAuthClientId: "787759781218-fa57asnept105qrlmv80tf4877jgkhvk.apps.googleusercontent.com",
+    googleAuthClientId: "787759781218-jr34v4kr0ht47lhicb1bon3jbu3sd9g0.apps.googleusercontent.com",
 }
