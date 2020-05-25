@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Serilog;
@@ -112,12 +113,12 @@ namespace SharedList.API.Presentation
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            if(env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
+            } 
             else
             {
                 app.UseHsts();
@@ -126,11 +127,16 @@ namespace SharedList.API.Presentation
             app.UseHttpsRedirection();
             app.UseExceptionHandler(ExceptionHandler);
             app.UseCors(AllowSpecificOriginsCORSPolicy);
+            
+            app.UseRouting();
+
             app.UseAuthentication();
-            app.UseMvc();
-            app.UseSignalR(cfg =>
+            app.UseAuthorization();
+            
+            app.UseEndpoints(endpoints =>
             {
-                cfg.MapHub<ListHub>("/listHub");
+                endpoints.MapControllers();
+                endpoints.MapHub<ListHub>("/listhub");
             });
         }
 

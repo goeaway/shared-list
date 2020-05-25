@@ -19,7 +19,7 @@ namespace SharedList.API.Tests.Core.Providers
 
             var result = provider.CreateRandomId();
 
-            Assert.AreEqual("EverlastingCavernousBlachindla", result);
+            Assert.AreEqual("EverlastingCavernousBougatsa", result);
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace SharedList.API.Tests.Core.Providers
             var random = new Random(1);
             var provider = new RandomisedWordProvider(random);
             var result = provider.CreateRandomName();
-            Assert.AreEqual("Everlasting Bougatsa", result);
+            Assert.AreEqual("Everlasting Charlotte", result);
         }
 
         [TestMethod]
