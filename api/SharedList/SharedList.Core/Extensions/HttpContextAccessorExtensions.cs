@@ -14,7 +14,7 @@ namespace SharedList.Core.Extensions
             return contextAccessor
                 .HttpContext
                 .User
-                .Claims
+                .Claims 
                 .FirstOrDefault(c => c.Type == ClaimTypes.Email)
                 ?.Value;
         }
