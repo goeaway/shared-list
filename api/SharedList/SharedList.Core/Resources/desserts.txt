@@ -1,7 +1,4 @@
-﻿Test Name:	TestMethod1
-Test Outcome:	Passed
-Result StandardOutput:	
-Allerheiligenstriezel
+﻿Allerheiligenstriezel
 Amandine
 Babka
 Baumkuchen
