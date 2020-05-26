@@ -85,7 +85,6 @@ namespace SharedList.API.Tests.Commands
         {
             const string ID = "id";
             const string ITEM_ID = "itemId";
-            const string USER = "user";
             using (var context = Setup.CreateContext())
             {
                 var list = new List
