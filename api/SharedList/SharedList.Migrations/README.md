@@ -21,3 +21,7 @@ options.UseSqlServer(
 `Add-Migration MigrationName -Project [MigrationsProject]` - best to make sure the name reflects what you're doing the db, such which table or column is being updated or for what feature change
 * Running that command should result in a couple of files being added to the Migrations folder
 * Then run `Update-Database MigrationName -Project [MigrationsProject]`, this should result in the Database being updated with the required changes
+
+### Create SQL script 
+`Script-Migration -Idempotent` to create an sql script version of the migration
+[more info here](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell#script-migration)
