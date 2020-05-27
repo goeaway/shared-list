@@ -23,13 +23,14 @@ namespace SharedList.API.Tests.Pipeline
         public async Task CallsNextIfNoValidationErrorsOccur()
         {
             const string LIST_ID = "id";
+            const string USER = "user";
 
             var validators = new List<IValidator<GetListRequest>>
             {
                 new GetListValidator()
             };
 
-            var request = new GetListRequest(LIST_ID);
+            var request = new GetListRequest(LIST_ID, USER);
             var validationBehaviour = new ValidationBehaviour<GetListRequest, ListDTO>(validators);
             var handlerMock = new Mock<RequestHandlerDelegate<ListDTO>>();
             var mockReturned = new ListDTO();
@@ -44,12 +45,13 @@ namespace SharedList.API.Tests.Pipeline
         [TestMethod]
         public async Task ThrowsErrorIfAValidationErrorOccurs()
         {
+            const string USER = "user";
             var validators = new List<IValidator<GetListRequest>>
             {
                 new GetListValidator()
             };
 
-            var request = new GetListRequest(string.Empty);
+            var request = new GetListRequest(string.Empty, USER);
             var validationBehaviour = new ValidationBehaviour<GetListRequest, ListDTO>(validators);
 
             var handlerMock = new Mock<RequestHandlerDelegate<ListDTO>>();
@@ -61,13 +63,13 @@ namespace SharedList.API.Tests.Pipeline
         [TestMethod]
         public async Task ValidationErrorsAreAddedToException()
         {
-
+            const string USER = "user";
             var validators = new List<IValidator<GetListRequest>>
             {
                 new GetListValidator()
             };
 
-            var request = new GetListRequest(string.Empty);
+            var request = new GetListRequest(string.Empty, USER);
             var validationBehaviour = new ValidationBehaviour<GetListRequest, ListDTO>(validators);
 
             var handlerMock = new Mock<RequestHandlerDelegate<ListDTO>>();

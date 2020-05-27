@@ -48,7 +48,8 @@ namespace SharedList.API.Presentation.Controllers
         [HttpGet("get/{id}")]
         public Task<ListDTO> Get(string id)
         {
-            return _mediator.Send(new GetListRequest(id));
+            var userIdent = _contextAccessor.GetUserIdent();
+            return _mediator.Send(new GetListRequest(id, userIdent));
         }
 
         [HttpPost("createempty")]

@@ -72,8 +72,15 @@ const ListPage : FC = ({}) => {
             } else {
                 if(response.status === 401) {
                     setAuthentication(undefined);
+                } else if(response.status === 403) {
+                    push("/");
+                    addToast(<span>List limit reached.</span>, {
+                        appearance: "error",
+                        autoDismiss: false
+                    });
+                } else {
+                    errorHandler();
                 }
-                errorHandler();
             }
         })
         .catch(reason => {

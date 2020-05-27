@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharedList.API.Application.Exceptions;
 using SharedList.API.Application.Queries.GetList;
 using SharedList.API.Tests.TestUtilities;
+using SharedList.Core.Models.Entities;
 using SharedList.Core.Models.Mapping;
 using SharedList.Persistence;
 using SharedList.Persistence.Models.Entities;
@@ -19,33 +22,41 @@ namespace SharedList.API.Tests.Queries
     [TestCategory("Queries - GetList")]
     public class GetListTests
     {
-        private (SharedListContext, IMapper) CreateDeps()
+        private (SharedListContext, IMapper, IConfiguration) CreateDeps(int listLimit = 10)
         {
+            var configValues = new Dictionary<string, string>
+            {
+                { "Limits:Lists", $"{listLimit}" }
+            };
+
             return (Setup.CreateContext(), new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<ListProfile>();
                 cfg.AddProfile<ListItemProfile>();
-            }).CreateMapper());
+            }).CreateMapper(),
+            new ConfigurationBuilder().AddInMemoryCollection(configValues).Build());
         }
 
         [TestMethod]
         public async Task ThrowsIfNoListFound()
         {
             const string ID = "id";
-            var (context, mapper) = CreateDeps();
+            const string USER = "user";
+            var (context, mapper, config) = CreateDeps();
             using (context)
             {
-                var request = new GetListRequest(ID);
-                var handler = new GetListHandler(context, mapper);
+                var request = new GetListRequest(ID, USER);
+                var handler = new GetListHandler(context, mapper, config);
                 await Assert.ThrowsExceptionAsync<RequestFailedException>(() => handler.Handle(request, CancellationToken.None));
             }
         }
 
         [TestMethod]
-        public async Task ReturnsListDTOForList()
+        public async Task ThrowsIfUserReachedMaxBeforeContributing()
         {
             const string ID = "id";
-            var (context, mapper) = CreateDeps();
+            const string USER = "user";
+            var (context, mapper, config) = CreateDeps(0);
             using (context)
             {
                 // seed DB
@@ -56,8 +67,74 @@ namespace SharedList.API.Tests.Queries
 
                 context.SaveChanges();
 
-                var request = new GetListRequest(ID);
-                var handler = new GetListHandler(context, mapper);
+                var request = new GetListRequest(ID, USER);
+                var handler = new GetListHandler(context, mapper, config);
+
+                try
+                {
+                    await handler.Handle(request, CancellationToken.None);
+                    Assert.Fail("exception was not thrown");
+                }
+                catch(RequestFailedException e)
+                {
+                    Assert.AreEqual(HttpStatusCode.Forbidden, e.Code);
+                }
+                catch (Exception)
+                {
+                    Assert.Fail("didn't throw correct exception");
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task DoesNotThrowIfUserReachedMaxAfterContributing()
+        {
+            const string ID = "id";
+            const string USER = "user";
+            var (context, mapper, config) = CreateDeps(0);
+            using (context)
+            {
+                // seed DB
+                context.Lists.Add(new List
+                {
+                    Id = ID
+                });
+
+                context.ListContributors.Add(new ListContributor
+                {
+                    ListId = ID,
+                    UserIdent = USER
+                });
+
+                context.SaveChanges();
+
+                var request = new GetListRequest(ID, USER);
+                var handler = new GetListHandler(context, mapper, config);
+
+                var result = await handler.Handle(request, CancellationToken.None);
+
+                Assert.IsNotNull(result);
+            }
+        }
+
+        [TestMethod]
+        public async Task ReturnsListDTOForList()
+        {
+            const string ID = "id";
+            const string USER = "user";
+            var (context, mapper, config) = CreateDeps();
+            using (context)
+            {
+                // seed DB
+                context.Lists.Add(new List
+                {
+                    Id = ID
+                });
+
+                context.SaveChanges();
+
+                var request = new GetListRequest(ID, USER);
+                var handler = new GetListHandler(context, mapper, config);
                 var result = await handler.Handle(request, CancellationToken.None);
 
                 // only check it's the right one, let the mapping tests check the properties
@@ -70,7 +147,8 @@ namespace SharedList.API.Tests.Queries
         public async Task ReturnsListDTOForListIgnoresIdCase()
         {
             const string ID = "id";
-            var (context, mapper) = CreateDeps();
+            const string USER = "user";
+            var (context, mapper, config) = CreateDeps();
             using (context)
             {
                 // seed DB
@@ -81,8 +159,8 @@ namespace SharedList.API.Tests.Queries
 
                 context.SaveChanges();
 
-                var request = new GetListRequest(ID.ToLower());
-                var handler = new GetListHandler(context, mapper);
+                var request = new GetListRequest(ID.ToLower(), USER);
+                var handler = new GetListHandler(context, mapper, config);
                 var result = await handler.Handle(request, CancellationToken.None);
 
                 // only check it's the right one, let the mapping tests check the properties
@@ -97,8 +175,8 @@ namespace SharedList.API.Tests.Queries
             const string ID = "id";
             const string ORDER_ONE_ID = "1";
             const string ORDER_ZERO_ID = "0";
-
-            var (context, mapper) = CreateDeps();
+            const string USER = "user";
+            var (context, mapper, config) = CreateDeps();
             using (context)
             {
                 // seed DB
@@ -122,8 +200,8 @@ namespace SharedList.API.Tests.Queries
 
                 context.SaveChanges();
 
-                var request = new GetListRequest(ID);
-                var handler = new GetListHandler(context, mapper);
+                var request = new GetListRequest(ID, USER);
+                var handler = new GetListHandler(context, mapper, config);
                 var result = await handler.Handle(request, CancellationToken.None);
 
                 Assert.AreEqual(ORDER_ZERO_ID, result.Items.First().Id);

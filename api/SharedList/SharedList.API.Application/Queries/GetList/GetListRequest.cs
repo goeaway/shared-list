@@ -8,11 +8,13 @@ namespace SharedList.API.Application.Queries.GetList
 {
     public class GetListRequest : IRequest<ListDTO>
     {
+        public string UserIdent { get; set; }
         public string Id { get; set; }
 
-        public GetListRequest(string id)
+        public GetListRequest(string id, string userIdent)
         {
             Id = id;
+            UserIdent = userIdent;
         }
     }
 }

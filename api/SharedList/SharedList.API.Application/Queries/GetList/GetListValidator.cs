@@ -12,6 +12,8 @@ namespace SharedList.API.Application.Queries.GetList
             RuleFor(model => model.Id)
                 .NotEmpty()
                 .WithMessage("Id not set");
+
+            RuleFor(model => model.UserIdent).NotEmpty().WithMessage("UserId not set");
         }
     }
 }
