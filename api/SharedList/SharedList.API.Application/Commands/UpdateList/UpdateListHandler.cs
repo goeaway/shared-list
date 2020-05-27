@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using SharedList.API.Application.Exceptions;
 using SharedList.Core.Abstractions;
 using SharedList.Core.Models.Entities;
 using SharedList.Persistence;
@@ -17,15 +19,23 @@ namespace SharedList.API.Application.Commands.UpdateList
     {
         private readonly SharedListContext _context;
         private readonly INowProvider _nowProvider;
+        private readonly IConfiguration _configuration;
 
-        public UpdateListHandler(SharedListContext context, INowProvider nowProvider)
+        public UpdateListHandler(SharedListContext context, INowProvider nowProvider, IConfiguration configuration)
         {
             _context = context;
             _nowProvider = nowProvider;
+            _configuration = configuration;
         }
 
         public async Task<Unit> Handle(UpdateListRequest request, CancellationToken cancellationToken)
         {
+            var itemLimit = _configuration.GetValue<int>("Limits:ListItems");
+            if (request.DTO.Items.Count >= itemLimit)
+            {
+                throw new RequestFailedException($"List Item limit reached ({itemLimit})", System.Net.HttpStatusCode.Forbidden);
+            }
+
             var existing = await _context.Lists
                 .Include(l => l.Items)
                 .FirstOrDefaultAsync(l => l.Id == request.DTO.Id);

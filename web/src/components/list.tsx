@@ -13,6 +13,7 @@ import styled from "styled-components";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useToasts } from "react-toast-notifications";
 import InfoTooltip from "./tooltips/info-tooltip";
+import { config } from "@config/production";
 
 export interface ListProps {
     list: ListDTO;
@@ -165,7 +166,13 @@ const List : FC<ListProps> = ({ list, showCopy, canCopy, onChange }) => {
                     </InfoTooltip>
                 </ControlBarInner>
             </ControlBar>
-            <ListInput onAdd={inputOnAddHandler} onLoseFocus={inputRequestLoseFocusHandler} onRequestFocus={inputRequestFocusHandler} focus={inputFocus} clickOutsideRef={outsideInputClickRef} />
+            <ListInput 
+                onAdd={inputOnAddHandler} 
+                onLoseFocus={inputRequestLoseFocusHandler} 
+                onRequestFocus={inputRequestFocusHandler} 
+                focus={inputFocus} 
+                clickOutsideRef={outsideInputClickRef}
+                disable={list.items.length >= config.limits.listItems} />
             <ItemContainer role="list-items-container">
                 {items.length === 0 && <ListEmpty />}
                 {items.length > 0 && hideCompleted && items.filter(i => !i.completed).length === 0 && <ListEmpty icon={FaCheckCircle} text="All items complete" />}

@@ -22,29 +22,33 @@ namespace SharedList.API.Application.Queries.GetListsForUser
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ListPreviewDTO>> Handle(GetListPreviewsRequest request, CancellationToken cancellationToken)
+        public Task<IEnumerable<ListPreviewDTO>> Handle(GetListPreviewsRequest request, CancellationToken cancellationToken)
         {
-            // get contributions for this user
-            var contributions = _context.ListContributors.Where(lc => lc.UserIdent == request.UserIdent);
-            // get all lists with those contrinbutions
-            var lists = _context
-                .Lists
-                .Where(l => contributions.Any(c => c.ListId == l.Id))
-                .OrderByDescending(l => l.Updated);
-
-            // map to preview
-            var mapped = _mapper.Map<IEnumerable<ListPreviewDTO>>(lists);
-
-            // find other contributors for each
-            foreach (var list in mapped)
+            return Task.Run(() =>
             {
-                list.OtherContributors =
-                    _context.ListContributors
-                        .Where(lc => lc.UserIdent != request.UserIdent && lc.ListId == list.Id)
-                        .Select(lc => lc.UserIdent);
-            }
+                // get contributions for this user
+                var contributions = _context.ListContributors.Where(lc => lc.UserIdent == request.UserIdent);
+                // get all lists with those contrinbutions
+                var lists = _context
+                    .Lists
+                    .Where(l => contributions.Any(c => c.ListId == l.Id))
+                    .OrderByDescending(l => l.Updated);
 
-            return mapped;
+                // map to preview
+                var mapped = _mapper.Map<IEnumerable<ListPreviewDTO>>(lists);
+
+                // find other contributors for each
+                foreach (var list in mapped)
+                {
+                    list.OtherContributors =
+                        _context.ListContributors
+                            .Where(lc => lc.UserIdent != request.UserIdent && lc.ListId == list.Id)
+                            .Select(lc => lc.UserIdent)
+                            .ToList();
+                }
+
+                return mapped;
+            });
         }
     }
 }

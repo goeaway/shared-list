@@ -11,9 +11,10 @@ export interface ListInputProps {
     clickOutsideRef: MutableRefObject<HTMLInputElement>;
     onLoseFocus: () => void;
     onRequestFocus: () => void;
+    disable?: boolean;
 }
 
-const ListInput : FC<ListInputProps> = ({ onAdd, focus, clickOutsideRef, onLoseFocus, onRequestFocus }) => {
+const ListInput : FC<ListInputProps> = ({ onAdd, focus, clickOutsideRef, onLoseFocus, onRequestFocus, disable }) => {
     const [value, setValue] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,7 +47,7 @@ const ListInput : FC<ListInputProps> = ({ onAdd, focus, clickOutsideRef, onLoseF
     }
 
     const buttonClickHandler = () => {
-        if(value) {
+        if(value && !disable) {
             onAdd(value);
             setValue("");
         }
@@ -55,7 +56,7 @@ const ListInput : FC<ListInputProps> = ({ onAdd, focus, clickOutsideRef, onLoseF
     return (
         <StyledContainer ref={clickOutsideRef} role="list-input">
             <Input withAddon ref={inputRef} type="text" value={value} placeholder="Add an item..." onClick={onRequestFocus} onChange={valueChangeHandler} />
-            <AccentButton append role="add-item-button" onClick={buttonClickHandler}><FaPlus /></AccentButton>
+            <AccentButton disabled={disable} append role="add-item-button" onClick={buttonClickHandler}><FaPlus /></AccentButton>
         </StyledContainer>
     );
 }

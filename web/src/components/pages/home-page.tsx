@@ -93,6 +93,10 @@ const HomePage : FC<any> = ({ location }) => {
     }
 
     const onAddListHandler = async () => {
+        if(userLists.length >= config.limits.lists) {
+            return;
+        }
+
         const result = await fetch(`${config.apiURL}/list/createempty`, {
             method: "POST",
             headers: {

@@ -6,6 +6,7 @@ import { FaPlus } from "react-icons/fa";
 import { AccentButton } from "./style/buttons";
 import ListEmpty from "./list-empty";
 import ListPreview from "./list-preview";
+import { config } from "@config/production";
 
 export interface ListListProps {
     lists: Array<ListPreviewDTO>;
@@ -18,7 +19,7 @@ const ListList : FC<ListListProps> = ({ lists, onDelete, onAdd }) => {
         <Container>
             <ControlBar>
                 <Title>Your Lists</Title>            
-                <AccentButton onClick={onAdd}><FaPlus />&nbsp;Add New List</AccentButton>
+                <AccentButton disabled={lists.length >= config.limits.lists} onClick={onAdd}><FaPlus />&nbsp;Add New List</AccentButton>
             </ControlBar>
             <ListsContainer>
                 {lists.length === 0 && <ListEmpty text="No lists yet..."></ListEmpty>}

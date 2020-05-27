@@ -4,11 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedList.API.Application.Commands.CreateEmptyList;
-using SharedList.API.Application.Commands.CreateList;
 using SharedList.API.Application.Commands.DeleteList;
 using SharedList.API.Application.Commands.UpdateList;
 using SharedList.API.Application.Queries.GetList;
@@ -58,13 +56,6 @@ namespace SharedList.API.Presentation.Controllers
         {
             var userIdent = _contextAccessor.GetUserIdent();
             return _mediator.Send(new CreateEmptyListRequest(userIdent));
-        }
-
-        [HttpPost("create")]
-        public Task<string> Create(ListDTO dto)
-        {
-            var userIdent = _contextAccessor.GetUserIdent();
-            return _mediator.Send(new CreateListRequest(dto, userIdent));
         }
 
         [HttpPut("update")]
