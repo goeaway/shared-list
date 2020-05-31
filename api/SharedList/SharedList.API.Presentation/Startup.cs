@@ -35,33 +35,7 @@ namespace SharedList.API.Presentation
     {
         public Startup(IConfiguration configuration)
         {
-            const string AWS_BEANSTALK_CONFIG_PATH = "C:\\Program Files\\Amazon\\ElasticBeanstalk\\config\\containerconfiguration";
-            if (File.Exists(AWS_BEANSTALK_CONFIG_PATH))
-            {
-                var builder = new ConfigurationBuilder()
-                    .AddJsonFile(
-                        AWS_BEANSTALK_CONFIG_PATH, 
-                        optional: true, 
-                        reloadOnChange: true);
-                var baseConfig = builder.Build();
-
-                var env = baseConfig.GetSection("iis:env").GetChildren();
-                var loadedItems = new Dictionary<string, string>();
-                foreach(var envVar in env)
-                {
-                    var split = envVar.Value.Split("=");
-                    var envKey = split[0];
-                    var envVal = split[1];
-                    loadedItems.Add(envKey, envVal);
-                }
-
-                Configuration = new ConfigurationBuilder().AddInMemoryCollection(loadedItems).Build();
-            } 
-            else
-            {
-                throw new Exception("Config file not found");
-                Configuration = configuration;
-            }
+            Configuration = AWSConfigurationHelper.CreateConfiguration(configuration);
         }
 
         public IConfiguration Configuration { get; }
