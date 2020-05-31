@@ -43,7 +43,19 @@ namespace SharedList.API.Presentation
                         AWS_BEANSTALK_CONFIG_PATH, 
                         optional: true, 
                         reloadOnChange: true);
-                Configuration = builder.Build();
+                var baseConfig = builder.Build();
+
+                var env = baseConfig.GetSection("iis:env").GetChildren();
+                var loadedItems = new Dictionary<string, string>();
+                foreach(var envVar in env)
+                {
+                    var split = envVar.Value.Split("=");
+                    var envKey = split[0];
+                    var envVal = split[1];
+                    loadedItems.Add(envKey, envVal);
+                }
+
+                Configuration = new ConfigurationBuilder().AddInMemoryCollection(loadedItems).Build();
             } 
             else
             {
