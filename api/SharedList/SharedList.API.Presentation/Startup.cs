@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -34,7 +35,20 @@ namespace SharedList.API.Presentation
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            const string AWS_BEANSTALK_CONFIG_PATH = "C:\\ProgramFiles\\Amazon\\ElasticBeanstalk\\config\\containerconfiguration";
+            if (File.Exists(AWS_BEANSTALK_CONFIG_PATH))
+            {
+                var builder = new ConfigurationBuilder()
+                    .AddJsonFile(
+                        AWS_BEANSTALK_CONFIG_PATH, 
+                        optional: true, 
+                        reloadOnChange: true);
+                Configuration = builder.Build();
+            } 
+            else
+            {
+                Configuration = configuration;
+            }
         }
 
         public IConfiguration Configuration { get; }
