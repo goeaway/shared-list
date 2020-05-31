@@ -35,7 +35,7 @@ namespace SharedList.API.Presentation
     {
         public Startup(IConfiguration configuration)
         {
-            const string AWS_BEANSTALK_CONFIG_PATH = "C:\\ProgramFiles\\Amazon\\ElasticBeanstalk\\config\\containerconfiguration";
+            const string AWS_BEANSTALK_CONFIG_PATH = "C:\\Program Files\\Amazon\\ElasticBeanstalk\\config\\containerconfiguration";
             if (File.Exists(AWS_BEANSTALK_CONFIG_PATH))
             {
                 var builder = new ConfigurationBuilder()
