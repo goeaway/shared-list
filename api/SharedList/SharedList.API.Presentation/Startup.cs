@@ -59,6 +59,7 @@ namespace SharedList.API.Presentation
             } 
             else
             {
+                throw new Exception("Config file not found");
                 Configuration = configuration;
             }
         }
