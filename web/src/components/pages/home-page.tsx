@@ -96,6 +96,7 @@ const HomePage : FC<any> = ({ location }) => {
             const copy = [...lists];
             const deleted = copy.findIndex(c => c.id === id);
             copy.splice(deleted, 1);
+            setListPreviews(copy);
             return copy;
         });
 
@@ -108,10 +109,6 @@ const HomePage : FC<any> = ({ location }) => {
 
         if(result.status === 401) {
             setAuthentication(undefined);
-        }
-
-        if(result.ok) {
-            setListPreviews([]);
         }
     }
 
