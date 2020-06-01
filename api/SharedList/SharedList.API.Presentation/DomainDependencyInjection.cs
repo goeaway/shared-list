@@ -11,6 +11,8 @@ using SharedList.Core.Implementations;
 using Serilog.Sinks.AwsCloudWatch;
 using Amazon.CloudWatchLogs;
 using Amazon;
+using Serilog.Formatting;
+using Serilog.Events;
 
 namespace SharedList.API.Presentation
 {
@@ -27,6 +29,18 @@ namespace SharedList.API.Presentation
             var random = new Random();
             collection.AddSingleton<IRandomisedWordProvider>(new RandomisedWordProvider(random));
             return collection;
+        }
+
+        private class AWSTextFormatter : ITextFormatter
+        {
+            public void Format(LogEvent logEvent, TextWriter output)
+            {
+                output.Write("Timestamp - {0} | Level - {1} | Message {2} {3}", logEvent.Timestamp, logEvent.Level, logEvent.MessageTemplate, output.NewLine);
+                if (logEvent.Exception != null)
+                {
+                    output.Write("Exception - {0}", logEvent.Exception);
+                }
+            }
         }
 
         public static IServiceCollection AddLogger(this IServiceCollection collection, IConfiguration configuration)
@@ -48,7 +62,8 @@ namespace SharedList.API.Presentation
                         BatchSizeLimit = 100,
                         QueueSizeLimit = 10000,
                         LogStreamNameProvider = new DefaultLogStreamProvider(),
-                        RetryAttempts = 5
+                        RetryAttempts = 5,
+                        TextFormatter = new AWSTextFormatter(),
                     };
 
                     logConfig.WriteTo.AmazonCloudWatch(options, client);
