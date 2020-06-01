@@ -1,3 +1,1 @@
-﻿# shared-list
- 
-[![Build status](https://goeaway.visualstudio.com/Share%20The%20Shop/_apis/build/status/Share%20The%20Shop-Docker%20container-CI)](https://goeaway.visualstudio.com/Share%20The%20Shop/_build/latest?definitionId=7)
+[![Build status](https://dev.azure.com/joetmazure/Share%20the%20Shop/_apis/build/status/Artefact%20Publish%20CI)](https://dev.azure.com/joetmazure/Share%20the%20Shop/_build/latest?definitionId=1)
