@@ -153,7 +153,7 @@ namespace SharedList.API.Presentation
                 var logger = app.ApplicationServices.GetService<ILogger>();
                 logger.Error(exception, "Error occurred when processing request {uri}", uri);
 
-                var errorList = new List<string> { exception.Message };
+                var errorList = new List<string> { exception.Message, exception.StackTrace };
 
                 if (exception.InnerException != null)
                 {

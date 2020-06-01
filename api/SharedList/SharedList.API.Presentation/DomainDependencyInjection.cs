@@ -63,6 +63,7 @@ namespace SharedList.API.Presentation
                         QueueSizeLimit = 10000,
                         LogStreamNameProvider = new DefaultLogStreamProvider(),
                         RetryAttempts = 5,
+                        CreateLogGroup = true,
                         TextFormatter = new AWSTextFormatter(),
                     };
 
