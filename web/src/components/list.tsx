@@ -149,7 +149,7 @@ const List : FC<ListProps> = ({ list, showCopy, canCopy, onChange }) => {
             {showCopy && 
             <ControlBar role="list-control-bar">
                 <ControlBarInner>
-                        <AccentButton disabled={!canCopy} role="copy-url" onClick={onCopyURLClickHandler}><FaShareAlt /><span>&nbsp;Share List</span></AccentButton>
+                    <AccentButton disabled={!canCopy} role="copy-url" onClick={onCopyURLClickHandler}><FaShareAlt /><span>&nbsp;Share List</span></AccentButton>
                 </ControlBarInner>
             </ControlBar>
             }

@@ -8,12 +8,13 @@ import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router";
 import { AuthenticationResponse, ListDTO, ListPreviewDTO } from "../../types";
 import { config } from "@config/production";
+import { getListPreviews, setListPreviews } from "../../utils/storage";
 
 const HomePage : FC<any> = ({ location }) => {
     const { authData, isAuthed, setAuthentication } = useAuth();
     const { push } = useHistory();
     const [demoList, setDemoList] = useState<ListDTO>({id: v1(), name: "", items: []});
-    const [userLists, setUserLists] = useState<Array<ListPreviewDTO>>([]);
+    const [userLists, setUserLists] = useState<Array<ListPreviewDTO>>(getListPreviews());
     const [adding, setAdding] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -31,7 +32,9 @@ const HomePage : FC<any> = ({ location }) => {
             .then(response => {
                 if(response.ok) {
                     response.json().then(json => {
-                        setUserLists(json as Array<ListPreviewDTO>);
+                        const data = json as Array<ListPreviewDTO>;
+                        setListPreviews(data);
+                        setUserLists(data);
                     });
                 } else if(response.status === 401) {
                     setAuthentication(undefined);
@@ -106,6 +109,10 @@ const HomePage : FC<any> = ({ location }) => {
         if(result.status === 401) {
             setAuthentication(undefined);
         }
+
+        if(result.ok) {
+            setListPreviews([]);
+        }
     }
 
     const onAddListHandler = () => {
@@ -123,6 +130,7 @@ const HomePage : FC<any> = ({ location }) => {
         }).then(async result => {
             if(result.ok) {
                 const newId = await result.text();
+                setListPreviews([]);
                 push(`/list/${newId}`);
             } else if(result.status === 401) {
                 setAuthentication(undefined);
@@ -152,10 +160,7 @@ const HomePage : FC<any> = ({ location }) => {
                     </ContentRight>
                 </DemoContainer>
             }
-            { 
-                isAuthed(authData) && 
-                    <ListList lists={userLists} onDelete={onDeleteListHandler} onAdd={onAddListHandler} loading={loading} adding={adding} />
-            }
+            {isAuthed(authData) && <ListList lists={userLists} onDelete={onDeleteListHandler} onAdd={onAddListHandler} loading={loading} adding={adding} />}
         </Container>
     );
 }
