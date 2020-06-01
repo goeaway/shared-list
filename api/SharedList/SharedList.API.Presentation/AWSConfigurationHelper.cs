@@ -11,7 +11,7 @@ namespace SharedList.API.Presentation
     public static class AWSConfigurationHelper
     {
         const string AWS_BEANSTALK_CONFIG_PATH = @"C:\Program Files\Amazon\ElasticBeanstalk\config\containerconfiguration";
-        const string ENV_KEY = "ASPNETCORE_ENVIORNMENT";
+        const string ENV_KEY = "ASPNETCORE_ENVIRONMENT";
 
         public static IConfiguration CreateConfiguration(IConfiguration baseConfiguration)
         {
@@ -32,7 +32,6 @@ namespace SharedList.API.Presentation
 
             if (ebItems.ContainsKey(ENV_KEY))
             {
-                throw new Exception("LOADING " + ebItems[ENV_KEY] + " config");
                 configbuilder.AddJsonFile($"appsettings.{ebItems[ENV_KEY]}.json");
             }
 
