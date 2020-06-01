@@ -57,7 +57,7 @@ namespace SharedList.API.Presentation
                     var client = new AmazonCloudWatchLogsClient(accessKeyId, accessSecretAccessKey, RegionEndpoint.EUWest2);
                     var options = new CloudWatchSinkOptions
                     {
-                        LogGroupName = "shared-list-beanstalk-log",
+                        LogGroupName = "shared-list-beanstalk-log/ShareListApi-env",
                         Period = TimeSpan.FromSeconds(10),
                         BatchSizeLimit = 100,
                         QueueSizeLimit = 10000,
