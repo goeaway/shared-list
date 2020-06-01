@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -35,7 +34,8 @@ namespace SharedList.API.Presentation
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = AWSConfigurationHelper.CreateConfiguration(configuration);
+            //Configuration = AWSConfigurationHelper.CreateConfiguration(configuration);
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
