@@ -18,8 +18,8 @@ namespace SharedList.API.Presentation.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("authenticate")]
-        public Task<AuthenticateResponse> Authenticate(string idToken)
+        [HttpPost("google")]
+        public Task<AuthenticateResponse> Google(string idToken)
         {
             return _mediator.Send(new AuthenticateRequest(idToken));
         }

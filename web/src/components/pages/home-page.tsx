@@ -49,7 +49,7 @@ const HomePage : FC<any> = ({ location }) => {
 
     const loginSuccess = async (response) => {
         // make request to API to register this user and get an API auth token
-        const result = await fetch(`${config.apiURL}/auth/authenticate?idToken=${response.tokenId}`, {
+        const result = await fetch(`${config.apiURL}/auth/google?idToken=${response.tokenId}`, {
             method: "POST"
         });
 
