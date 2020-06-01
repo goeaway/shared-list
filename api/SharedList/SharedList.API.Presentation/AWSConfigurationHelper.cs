@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Server.IIS.Core;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +20,7 @@ namespace SharedList.API.Presentation
                 return baseConfiguration;
             }
 
+            throw new Exception("LOADING EB CONFIG");
             var tempConfigBuilder = new ConfigurationBuilder()
                     .AddJsonFile(
                         AWS_BEANSTALK_CONFIG_PATH,
