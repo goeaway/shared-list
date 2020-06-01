@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SharedList.API.Presentation
 {
-    public class LambdaEntryPoint : APIGatewayProxyFunction
+    public class LambdaEntryPoint : APIGatewayHttpApiV2ProxyFunction
     {
         protected override void Init(IWebHostBuilder builder)
         {
