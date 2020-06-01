@@ -8,6 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using SharedList.Core.Abstractions;
 using SharedList.Core.Implementations;
+using Serilog.Sinks.AwsCloudWatch;
+using Amazon.CloudWatchLogs;
+using Amazon;
 
 namespace SharedList.API.Presentation
 {
@@ -26,13 +29,36 @@ namespace SharedList.API.Presentation
             return collection;
         }
 
-        public static IServiceCollection AddFileLogger(this IServiceCollection collection)
+        public static IServiceCollection AddLogger(this IServiceCollection collection, IConfiguration configuration)
         {
-            var path = Path.Combine(AppContext.BaseDirectory, "log-{Date}.log");
-            var logger = new LoggerConfiguration()
-                .WriteTo.RollingFile(path)
-                .CreateLogger();
-            collection.AddSingleton<ILogger>(logger);
+            var logConfig = new LoggerConfiguration();
+            var sink = configuration["Logging:Sink"];
+
+            switch(sink)
+            {
+                case "AWSCloudWatch":
+                    var accessKeyId = configuration["AWS:AccessKeyId"];
+                    var accessSecretAccessKey = configuration["AWS:AccessSecretAccessKey"];
+
+                    var client = new AmazonCloudWatchLogsClient(accessKeyId, accessSecretAccessKey, RegionEndpoint.EUWest2);
+                    var options = new CloudWatchSinkOptions
+                    {
+                        LogGroupName = "shared-list-beanstalk-log",
+                        Period = TimeSpan.FromSeconds(10),
+                        BatchSizeLimit = 100,
+                        QueueSizeLimit = 10000,
+                        LogStreamNameProvider = new DefaultLogStreamProvider(),
+                        RetryAttempts = 5
+                    };
+
+                    logConfig.WriteTo.AmazonCloudWatch(options, client);
+                    break;
+                default:
+                    logConfig.WriteTo.RollingFile(Path.Combine(AppContext.BaseDirectory, "log-{Date}.log"));
+                    break;
+            }
+
+            collection.AddSingleton<ILogger>(logConfig.CreateLogger());
             return collection;
         }
 

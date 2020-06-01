@@ -34,8 +34,7 @@ namespace SharedList.API.Presentation
     {
         public Startup(IConfiguration configuration)
         {
-            //Configuration = AWSConfigurationHelper.CreateConfiguration(configuration);
-            Configuration = configuration;
+            Configuration = AWSConfigurationHelper.CreateConfiguration(configuration);
         }
 
         public IConfiguration Configuration { get; }
@@ -74,6 +73,7 @@ namespace SharedList.API.Presentation
             services.AddMediatR(Assembly.GetAssembly(typeof(ValidationBehaviour<,>)));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddSignalR();
+            services.AddLogger(Configuration);
             services.AddConfiguration(Configuration);
 
             services
@@ -110,7 +110,6 @@ namespace SharedList.API.Presentation
                     };
                 });
 
-            services.AddFileLogger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
