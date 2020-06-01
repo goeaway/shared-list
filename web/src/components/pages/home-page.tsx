@@ -14,10 +14,13 @@ const HomePage : FC<any> = ({ location }) => {
     const { push } = useHistory();
     const [demoList, setDemoList] = useState<ListDTO>({id: v1(), name: "", items: []});
     const [userLists, setUserLists] = useState<Array<ListPreviewDTO>>([]);
+    const [adding, setAdding] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if(isAuthed(authData)) {
             // make request for user lists
+            const timerStart = performance.now();
             fetch(`${config.apiURL}/list/getlistpreviews`, {
                 method: "GET",
                 headers: {
@@ -30,10 +33,21 @@ const HomePage : FC<any> = ({ location }) => {
                     response.json().then(json => {
                         setUserLists(json as Array<ListPreviewDTO>);
                     });
+                } else if(response.status === 401) {
+                    setAuthentication(undefined);
                 }
             })
-            .catch(reason => {
-
+            .finally(() => {
+                // avoid jumps by forcing us to wait for at least 400 milliseconds
+                const timerStop = performance.now();
+                const waitTime = 400 - (timerStop - timerStart);
+                if(waitTime > 0) {
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, waitTime);
+                } else {
+                    setLoading(false);
+                }
             });
         } else {
             fetch(`${config.apiURL}/list/getname`)
@@ -75,6 +89,13 @@ const HomePage : FC<any> = ({ location }) => {
     }
 
     const onDeleteListHandler = async (id: string) => {
+        setUserLists(lists => {
+            const copy = [...lists];
+            const deleted = copy.findIndex(c => c.id === id);
+            copy.splice(deleted, 1);
+            return copy;
+        });
+
         const result = await fetch(`${config.apiURL}/list/delete/${id}`, {
             method: "DELETE",
             headers: {
@@ -82,32 +103,33 @@ const HomePage : FC<any> = ({ location }) => {
             }
         });
 
-        if(result.ok) {
-            setUserLists(lists => {
-                const copy = [...lists];
-                const deleted = copy.findIndex(c => c.id === id);
-                copy.splice(deleted, 1);
-                return copy;
-            });
+        if(result.status === 401) {
+            setAuthentication(undefined);
         }
     }
 
-    const onAddListHandler = async () => {
+    const onAddListHandler = () => {
         if(userLists.length >= config.limits.lists) {
             return;
         }
 
-        const result = await fetch(`${config.apiURL}/list/createempty`, {
+        setAdding(true);
+
+        fetch(`${config.apiURL}/list/createempty`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${authData.jwt}`
             }
+        }).then(async result => {
+            if(result.ok) {
+                const newId = await result.text();
+                push(`/list/${newId}`);
+            } else if(result.status === 401) {
+                setAuthentication(undefined);
+            }
+        }).finally(() => {
+            setAdding(false);
         });
-
-        if(result.ok) {
-            const newId = await result.text();
-            push(`/list/${newId}`);
-        }
     }
 
     return (
@@ -131,8 +153,8 @@ const HomePage : FC<any> = ({ location }) => {
                 </DemoContainer>
             }
             { 
-                isAuthed(authData) &&
-                <ListList lists={userLists} onDelete={onDeleteListHandler} onAdd={onAddListHandler} />
+                isAuthed(authData) && 
+                    <ListList lists={userLists} onDelete={onDeleteListHandler} onAdd={onAddListHandler} loading={loading} adding={adding} />
             }
         </Container>
     );

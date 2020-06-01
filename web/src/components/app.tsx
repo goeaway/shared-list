@@ -55,6 +55,19 @@ const AppContainer = styled.div`
     color: ${p => p.theme.fontLight5};
     background: ${p => p.theme.background1};
     position: relative;
+
+    .fa-spin {
+        animation: fa-spin 2s infinite linear;
+    }
+
+    @keyframes fa-spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(359deg);
+        }
+    }
 `
 
 const HomeLink = styled(IconLink)`

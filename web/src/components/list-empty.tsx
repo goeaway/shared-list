@@ -31,19 +31,6 @@ const StyledContainer = styled.div`
     > *:first-child {
         margin-bottom: 1rem;
     }
-
-    .fa-spin {
-        animation: fa-spin 2s infinite linear;
-    }
-
-    @keyframes fa-spin {
-        0% {
-            transform: rotate(0deg);
-        }
-        100% {
-            transform: rotate(359deg);
-        }
-    }
 `
     
 const Text = styled.span`

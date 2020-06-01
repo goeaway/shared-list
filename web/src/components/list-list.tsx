@@ -1,8 +1,7 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import styled from "styled-components";
-import { ListDTO, ListPreviewDTO } from "../types";
-import { useHistory } from "react-router";
-import { FaPlus } from "react-icons/fa";
+import { ListPreviewDTO } from "../types";
+import { FaPlus, FaSpinner } from "react-icons/fa";
 import { AccentButton } from "./style/buttons";
 import ListEmpty from "./list-empty";
 import ListPreview from "./list-preview";
@@ -12,22 +11,28 @@ export interface ListListProps {
     lists: Array<ListPreviewDTO>;
     onDelete: (id: string) => void;
     onAdd: () => void;
+    adding?: boolean;
+    loading?: boolean;
 }
 
-const ListList : FC<ListListProps> = ({ lists, onDelete, onAdd }) => {
+const ListList : FC<ListListProps> = ({ lists, onDelete, onAdd, adding, loading }) => {
     return (
         <Container>
             <ControlBar>
                 <Title>Your Lists</Title>            
-                <AccentButton disabled={lists.length >= config.limits.lists} onClick={onAdd}><FaPlus />&nbsp;Add New List</AccentButton>
-            </ControlBar>
-            <ListsContainer>
-                {lists.length === 0 && <ListEmpty text="No lists yet..."></ListEmpty>}
-                {
-                    lists.length > 0 && 
-                    lists.map(l => <ListPreview key={l.id} list={l} onDelete={onDelete} />)
-                }
-            </ListsContainer>
+                <AccentButton disabled={lists.length >= config.limits.lists || adding} onClick={onAdd}>{adding ? <FaSpinner className="fa-spin" /> : <FaPlus />}&nbsp;Add New List</AccentButton>
+            </ControlBar> 
+            {
+                loading ? 
+                <ListEmpty text="Loading lists..." icon={FaSpinner} spin /> : 
+                <ListsContainer>
+                    {lists.length === 0 && <ListEmpty text="No lists yet..."></ListEmpty>}
+                    {
+                        lists.length > 0 && 
+                        lists.map(l => <ListPreview key={l.id} list={l} onDelete={onDelete} />)
+                    }
+                </ListsContainer>
+            }
         </Container>
     );
 }
