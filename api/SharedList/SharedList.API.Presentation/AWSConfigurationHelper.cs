@@ -20,7 +20,6 @@ namespace SharedList.API.Presentation
                 return baseConfiguration;
             }
 
-            throw new Exception("LOADING EB CONFIG");
             var tempConfigBuilder = new ConfigurationBuilder()
                     .AddJsonFile(
                         AWS_BEANSTALK_CONFIG_PATH,
@@ -33,6 +32,7 @@ namespace SharedList.API.Presentation
 
             if (ebItems.ContainsKey(ENV_KEY))
             {
+                throw new Exception("LOADING " + ebItems[ENV_KEY] + " config");
                 configbuilder.AddJsonFile($"appsettings.{ebItems[ENV_KEY]}.json");
             }
 
