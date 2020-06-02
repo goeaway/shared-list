@@ -108,13 +108,13 @@ const Tooltip = styled.div`
     white-space: nowrap;
 
     ${(p: TooltipProps) => p.position === "top" && css`
-        bottom: 150%;
+        bottom: 100%;
         left: 50%;
         transform: translateX(-50%);
     `}
 
     ${(p: TooltipProps) => p.position === "bottom" && css`
-        top: 150%;
+        top: 100%;
         left: 50%;
         transform: translateX(-50%);
     `}

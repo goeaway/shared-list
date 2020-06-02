@@ -200,10 +200,7 @@ const DragHandle = styled.div`
     padding: .5rem;
 `
 
-
-
 const StyledSpan = styled.span`
-    margin-left: .5rem;
     flex: 1 1 auto;
     padding: .25rem;
     border: 2px solid transparent;
