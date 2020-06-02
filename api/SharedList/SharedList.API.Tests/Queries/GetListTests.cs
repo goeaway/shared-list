@@ -208,5 +208,61 @@ namespace SharedList.API.Tests.Queries
                 Assert.AreEqual(ORDER_ONE_ID, result.Items.ToList()[1].Id);
             }
         }
+
+        [TestMethod]
+        public async Task AddsListContributorRecordForUserAndList()
+        {
+            const string ID = "id", USER = "user";
+            var (context, mapper, config) = CreateDeps();
+            using (context)
+            {
+                // seed DB
+                context.Lists.Add(new List
+                {
+                    Id = ID
+                });
+
+                context.SaveChanges();
+
+                var request = new GetListRequest(ID, USER);
+                var handler = new GetListHandler(context, mapper, config);
+                await handler.Handle(request, CancellationToken.None);
+
+                Assert.AreEqual(1, context.ListContributors.Count());
+                Assert.AreEqual(ID, context.ListContributors.First().ListId);
+                Assert.AreEqual(USER, context.ListContributors.First().UserIdent);
+            }
+        }
+
+        [TestMethod]
+        public async Task DoesNotAddListContributorRecordForUserAndListIfAlreadyExists()
+        {
+            const string ID = "id", USER = "user";
+            var (context, mapper, config) = CreateDeps();
+            using (context)
+            {
+                // seed DB
+                context.Lists.Add(new List
+                {
+                    Id = ID
+                });
+
+                context.ListContributors.Add(new ListContributor
+                {
+                    ListId = ID,
+                    UserIdent = USER
+                });
+
+                context.SaveChanges();
+
+                var request = new GetListRequest(ID, USER);
+                var handler = new GetListHandler(context, mapper, config);
+                await handler.Handle(request, CancellationToken.None);
+
+                Assert.AreEqual(1, context.ListContributors.Count());
+                Assert.AreEqual(ID, context.ListContributors.First().ListId);
+                Assert.AreEqual(USER, context.ListContributors.First().UserIdent);
+            }
+        }
     }
 }

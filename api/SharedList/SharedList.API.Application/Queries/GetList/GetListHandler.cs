@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SharedList.API.Application.Exceptions;
 using SharedList.Core.Models.DTOs;
+using SharedList.Core.Models.Entities;
 using SharedList.Persistence;
 
 namespace SharedList.API.Application.Queries.GetList
@@ -45,6 +46,18 @@ namespace SharedList.API.Application.Queries.GetList
             if (list == null)
             {
                 throw new RequestFailedException($"Could not find list with id {request.Id}", HttpStatusCode.NotFound);
+            }
+
+            // add this user as a contributor straight away so if they leave before editing they can still see it
+            if(!_context.ListContributors.Any(lc => lc.UserIdent == request.UserIdent && lc.ListId == list.Id))
+            {
+                _context.ListContributors.Add(new ListContributor
+                {
+                    ListId = list.Id,
+                    UserIdent = request.UserIdent
+                });
+
+                await _context.SaveChangesAsync();
             }
 
             list.Items = list.Items.OrderBy(i => i.Order).ToList();
