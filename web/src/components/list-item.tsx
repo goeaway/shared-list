@@ -108,7 +108,9 @@ const ListItem : FC<ListItemProps> = ({index, listItem, onItemEdited, onEditingC
                             <ContentContainer>
                                 <ListCheckbox value={listItem.completed} onChange={checkboxChangedHandler} />
                                 <Spacer marginX={4} />
-                                {!editing && <StyledSpan role="list-item-value" onClick={onContainerClickHandler} complete={listItem.completed}>{listItem.value}</StyledSpan>}            
+                                {!editing && <StyledSpan role="list-item-value" onClick={onContainerClickHandler}>
+                                    <StyledSpanInner complete={listItem.completed}>{listItem.value}</StyledSpanInner>
+                                </StyledSpan>}            
                                 {editing && <SubtleInput ref={inputRef} role="list-item-input" value={editedValue} onChange={inputChangedHandler} onBlur={inputBlurredHandler}></SubtleInput>}
                             </ContentContainer>
                             <ConfirmTooltip position="left" content={<span>Are you sure you want to delete this item?</span>} onConfirm={deleteConfirmHandler} onDismiss={deleteCancelHandler} show={showConfirmDelete}>
@@ -198,26 +200,32 @@ const DragHandle = styled.div`
     padding: .5rem;
 `
 
-interface StyledSpanProps {
-    complete: boolean;
-}
+
 
 const StyledSpan = styled.span`
     margin-left: .5rem;
     flex: 1 1 auto;
     padding: .25rem;
     border: 2px solid transparent;
+`
+interface StyledSpanInnerProps {
+    complete: boolean;
+}
+    
+const StyledSpanInner = styled.span`
     position: relative;
 
-    ${(p: StyledSpanProps) => p.complete && css`
+    ${(p: StyledSpanInnerProps) => p.complete && css`
+        color: ${p => p.theme.fontLight4};
+
         &::after {
             content: ' ';
             position: absolute;
             top: 50%;
             left: 0;
             width: 100%;
-            height: 1px;
-            background: ${p => p.theme.fontLight5};
+            height: 1.5px;
+            background: ${p => p.theme.fontLight4};
             animation-name: strike;
             animation-duration: 100ms;
             animation-timing-function: linear;
