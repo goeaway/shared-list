@@ -5,7 +5,7 @@ import List from "../list";
 import { ListDTO } from "../../types";
 import { createNewList } from "../../utils/create-new-list";
 import { useToasts } from "react-toast-notifications";
-import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
+import { HubConnectionBuilder, HubConnection, HubConnectionState } from "@aspnet/signalr";
 import useAuth from "../../hooks/use-auth";
 import { FaSpinner } from "react-icons/fa";
 import ListEmpty from "../list-empty";
@@ -101,7 +101,7 @@ const ListPage : FC = ({}) => {
     }, [id]);
 
     async function onListChangeHandler (newList: ListDTO) {
-        if(connection) {
+        if(connection && connection.state === HubConnectionState.Connected) {
             await connection.invoke("updatelist", newList);
         } else {
             const result = await fetch(`${config.apiURL}/list/update`, {

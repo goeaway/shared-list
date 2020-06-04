@@ -9,12 +9,12 @@ export interface ListContributorsProps {
 const ListContributors : FC<ListContributorsProps> = ({contributors}) => {
     return (
         <Container>
-            {contributors.length === 0 && "No other contributors"}
-            {contributors.length > 0 && contributors.length < 4 && `With ${contributors.join(", ")}` }
+            {contributors.length === 0 && "no other contributors"}
+            {contributors.length > 0 && contributors.length < 4 && `with ${contributors.join(", ")}` }
             {contributors.length >= 4 && 
                 <Info>
                     <InfoTooltip delay={100} position="bottom" content={<span>{contributors.map(c => <span>{c}<br /></span>)}</span>}>
-                        With {contributors.slice(0, 3).join(", ")} <More>+{contributors.length - 3} more</More>
+                        with {contributors.slice(0, 3).join(", ")} <More>+{contributors.length - 3} more</More>
                     </InfoTooltip>
                 </Info>
             }
