@@ -102,7 +102,7 @@ const ListPage : FC = ({}) => {
 
     async function onListChangeHandler (newList: ListDTO) {
         if(connection && connection.state === HubConnectionState.Connected) {
-            await connection.invoke("updatelist", newList);
+            await connection.invoke("updatelist", { dto: newList, userIdent: authData.profile.email});
         } else {
             const result = await fetch(`${config.apiURL}/list/update`, {
                 method: "PUT",

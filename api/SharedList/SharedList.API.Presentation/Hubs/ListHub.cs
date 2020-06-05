@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using SharedList.API.Application.Commands.UpdateList;
+using SharedList.API.Presentation.Models;
 using SharedList.Core.Extensions;
 using SharedList.Core.Models.DTOs;
 
@@ -17,12 +18,10 @@ namespace SharedList.API.Presentation.Hubs
     public class ListHub : Hub
     {
         private readonly IMediator _mediator;
-        private readonly IHttpContextAccessor _contextAccessor;
 
-        public ListHub(IMediator mediator, IHttpContextAccessor contextAccessor)
+        public ListHub(IMediator mediator)
         {
             _mediator = mediator;
-            _contextAccessor = contextAccessor;
         }
 
         public Task JoinList(string listId)
@@ -35,12 +34,10 @@ namespace SharedList.API.Presentation.Hubs
             return Groups.RemoveFromGroupAsync(Context.ConnectionId, listId);
         }
 
-        public async Task UpdateList(ListDTO dto)
+        public async Task UpdateList(UpdateListHubDTO payload)
         {
-            var userIdent = _contextAccessor.GetUserIdent();
-
-            await _mediator.Send(new UpdateListRequest(dto, userIdent));
-            await Clients.OthersInGroup(dto.Id).SendAsync("UpdateList", dto, userIdent);
+            await _mediator.Send(new UpdateListRequest(payload.DTO, payload.UserIdent));
+            await Clients.OthersInGroup(payload.DTO.Id).SendAsync("UpdateList", payload.DTO, payload.UserIdent);
         }
     }
 }
