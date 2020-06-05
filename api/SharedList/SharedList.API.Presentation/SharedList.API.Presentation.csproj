@@ -32,4 +32,10 @@
     <ProjectReference Include="..\SharedList.Migrations\SharedList.Migrations.csproj" />
     <ProjectReference Include="..\SharedList.Persistence\SharedList.Persistence.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".ebextensions\https-instance-securitygroup.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
