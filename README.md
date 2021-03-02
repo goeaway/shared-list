@@ -1,6 +1,8 @@
+The live version is temporarily unavailable but will be back soon!
+
 ## Share the Shop
 
-Share the Shop allows users to create and collaborate on simple shopping lists in real time. Sign in with Google to create up to 10 shoppings lists on sharethe.shop.
+Share the Shop allows users to create and collaborate on simple shopping lists in real time. Sign in with Google to create up to 10 shoppings lists.
 
 [![Build status](https://dev.azure.com/joetmazure/Share%20the%20Shop/_apis/build/status/Artefact%20Publish%20CI)](https://dev.azure.com/joetmazure/Share%20the%20Shop/_build/latest?definitionId=1)
 
